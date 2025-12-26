@@ -58,7 +58,194 @@
                             <svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
                                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                             </svg>
-                            <span class="text-yellow-400 font-semibold">Serviço 5 Estrelas</span>
+                            <span class="text-green-400 font-semibold px-4 py-2 bg-green-900/30 rounded-lg">Principal</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let distanciaCalculada = 0;
+        let valorTotalCalculado = 0;
+        let origemAtual = '';
+        let destinoAtual = '';
+        const SENHA_ADMIN = 'lucas2024'; // Altere esta senha para maior segurança
+
+        function solicitarSenhaAdmin() {
+            const senha = prompt('🔐 Digite a senha do administrador:');
+            if (senha === SENHA_ADMIN) {
+                toggleAdmin();
+            } else if (senha !== null) {
+                alert('❌ Senha incorreta! Acesso negado.');
+            }
+        }
+
+        function toggleAdmin() {
+            document.getElementById('adminModal').classList.toggle('hidden');
+        }
+
+        function obterLocalizacao() {
+            const status = document.getElementById('locationStatus');
+            const origemInput = document.getElementById('origem');
+            status.classList.remove('hidden');
+            status.className = 'mt-3 p-3 glass rounded-lg text-sm text-cyan-300';
+            status.textContent = '🔄 Obtendo sua localização...';
+            
+            if (!navigator.geolocation) {
+                status.className = 'mt-3 p-3 glass rounded-lg text-sm text-red-300';
+                status.textContent = '❌ Geolocalização não suportada pelo navegador';
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    
+                    status.textContent = '🔄 Buscando endereço...';
+                    
+                    try {
+                        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=pt-BR`);
+                        const data = await response.json();
+                        
+                        const endereco = data.address;
+                        let enderecoFormatado = '';
+                        
+                        if (endereco.road) {
+                            enderecoFormatado = endereco.road;
+                            if (endereco.house_number) {
+                                enderecoFormatado += ', ' + endereco.house_number;
+                            }
+                            if (endereco.suburb || endereco.neighbourhood) {
+                                enderecoFormatado += ' - ' + (endereco.suburb || endereco.neighbourhood);
+                            }
+                            if (endereco.city || endereco.town) {
+                                enderecoFormatado += ', ' + (endereco.city || endereco.town);
+                            }
+                            if (endereco.state) {
+                                enderecoFormatado += ' - ' + endereco.state;
+                            }
+                        } else {
+                            enderecoFormatado = data.display_name;
+                        }
+                        
+                        origemInput.value = enderecoFormatado;
+                        status.className = 'mt-3 p-3 glass rounded-lg text-sm text-green-300';
+                        status.textContent = '✅ Localização obtida: ' + enderecoFormatado;
+                        setTimeout(() => status.classList.add('hidden'), 5000);
+                    } catch (error) {
+                        origemInput.value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                        status.className = 'mt-3 p-3 glass rounded-lg text-sm text-yellow-300';
+                        status.textContent = '⚠️ Localização obtida (coordenadas)';
+                        setTimeout(() => status.classList.add('hidden'), 3000);
+                    }
+                },
+                (error) => {
+                    status.className = 'mt-3 p-3 glass rounded-lg text-sm text-red-300';
+                    status.textContent = '❌ Erro ao obter localização. Ative a permissão no navegador.';
+                }
+            );
+        }
+
+        function calcularRota() {
+            const origem = document.getElementById('origem').value;
+            const destino = document.getElementById('destino').value;
+
+            if (!origem || !destino) {
+                alert('⚠️ Por favor, preencha origem e destino!');
+                return;
+            }
+
+            origemAtual = origem;
+            destinoAtual = destino;
+
+            const km = Math.round(Math.random() * 30 + 10);
+            const valorKm = km * 2.50;
+            const total = valorKm + 10.00;
+
+            distanciaCalculada = km;
+            valorTotalCalculado = total;
+
+            document.getElementById('distanciaTexto').textContent = km + ' km';
+            document.getElementById('valorKm').textContent = 'R$ ' + valorKm.toFixed(2);
+            document.getElementById('valorTotal').textContent = 'R$ ' + total.toFixed(2);
+            document.getElementById('valorPagamento').textContent = 'R$ ' + total.toFixed(2);
+            document.getElementById('resultadoPreco').classList.remove('hidden');
+            document.getElementById('secaoPagamento').classList.remove('hidden');
+            document.getElementById('btnWhatsApp').classList.add('hidden');
+
+            adicionarMensagemChat('driver', `✅ Rota calculada! Distância: ${km} km. Valor total: R$ ${total.toFixed(2)}. Por favor, realize o pagamento antecipado via PIX.`);
+        }
+
+        function copiarPix() {
+            const chavePix = '14712258799';
+            navigator.clipboard.writeText(chavePix).then(() => {
+                alert('✅ Chave PIX copiada com sucesso!\n\n📋 ' + chavePix);
+            }).catch(() => {
+                alert('📋 Chave PIX: ' + chavePix + '\n\nCopie manualmente esta chave.');
+            });
+        }
+
+        function confirmarPagamento() {
+            const confirmacao = confirm('✅ Confirma que realizou o pagamento de R$ ' + valorTotalCalculado.toFixed(2) + ' via PIX?\n\nApós confirmar, você poderá enviar a solicitação pelo WhatsApp.');
+            if (confirmacao) {
+                document.getElementById('btnWhatsApp').classList.remove('hidden');
+                document.getElementById('secaoPagamento').style.opacity = '0.6';
+                adicionarMensagemChat('driver', '✅ Pagamento confirmado! Agora você pode enviar a solicitação pelo WhatsApp. Clique no botão verde abaixo.');
+                alert('✅ Obrigado! Agora clique no botão verde "Enviar Solicitação via WhatsApp" para confirmar sua corrida.');
+            }
+        }
+
+        function enviarMensagem() {
+            const input = document.getElementById('mensagemInput');
+            const mensagem = input.value.trim();
+            
+            if (!mensagem) return;
+
+            adicionarMensagemChat('user', mensagem);
+            input.value = '';
+
+            setTimeout(() => {
+                adicionarMensagemChat('driver', '✅ Mensagem recebida! Para solicitar uma corrida, use o formulário acima, calcule o valor e realize o pagamento via PIX.');
+            }, 500);
+        }
+
+        function enviarWhatsApp() {
+            const mensagem = `🚗 *Nova Solicitação de Corrida Premium*
+
+👤 *Motorista:* Lucas Santos
+📍 *Origem:* ${origemAtual}
+🎯 *Destino:* ${destinoAtual}
+📏 *Distância:* ${distanciaCalculada} km
+💰 *Valor:* R$ ${valorTotalCalculado.toFixed(2)}
+
+✅ *Pagamento via PIX realizado*
+💳 Chave PIX: 147.122.587-99
+
+---
+🌟 Serviço Premium de Transporte
+⭐ Avaliação 4.9 | 1.247 corridas realizadas`;
+
+            const url = `https://wa.me/5527988668504?text=${encodeURIComponent(mensagem)}`;
+            window.open(url, '_blank');
+            
+            adicionarMensagemChat('driver', '✅ Redirecionando para WhatsApp... Aguarde o contato do motorista Lucas Santos!');
+        }
+
+        function adicionarMensagemChat(tipo, texto) {
+            const chat = document.getElementById('chatMessages');
+            const div = document.createElement('div');
+            div.className = tipo === 'user' 
+                ? 'p-4 rounded-2xl max-w-md bg-gradient-to-r from-purple-600 to-pink-600 text-white ml-auto text-right border border-purple-400/30 shadow-lg' 
+                : 'p-4 rounded-2xl max-w-md glass';
+            div.textContent = (tipo === 'user' ? '👤 ' : '👨‍💼 ') + texto;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        }
+    </script>
+</body>
+</html>text-yellow-400 font-semibold">Serviço 5 Estrelas</span>
                         </div>
                     </div>
                 </div>
