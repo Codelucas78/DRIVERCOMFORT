@@ -29,6 +29,40 @@
 </head>
 <body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen text-white">
     
+    <!-- Modal de Cadastro/Login -->
+    <div id="modalCadastro" class="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div class="glass rounded-3xl p-8 max-w-md w-full border border-purple-500/30 shadow-2xl">
+            <div class="text-center mb-8">
+                <div class="text-6xl mb-4">🚗</div>
+                <h2 class="text-3xl font-bold text-transparent bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text mb-2">
+                    Bem-vindo!
+                </h2>
+                <p class="text-gray-300">Faça seu cadastro para acessar nossos serviços</p>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-gray-200 mb-2 font-semibold">Nome Completo</label>
+                    <input type="text" id="cadastroNome" placeholder="Digite seu nome completo" class="w-full p-4 bg-slate-800 text-gray-200 border-2 border-slate-600 rounded-xl focus:border-purple-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-gray-200 mb-2 font-semibold">CPF</label>
+                    <input type="text" id="cadastroCPF" placeholder="000.000.000-00" maxlength="14" class="w-full p-4 bg-slate-800 text-gray-200 border-2 border-slate-600 rounded-xl focus:border-purple-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-gray-200 mb-2 font-semibold">Telefone (WhatsApp)</label>
+                    <input type="text" id="cadastroTelefone" placeholder="(27) 98888-8888" maxlength="15" class="w-full p-4 bg-slate-800 text-gray-200 border-2 border-slate-600 rounded-xl focus:border-purple-500 focus:outline-none">
+                </div>
+                <button onclick="realizarCadastro()" id="btnCadastro" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white p-4 rounded-xl font-bold hover:from-purple-700 hover:to-pink-700 transition-all duration-300">
+                    Acessar Plataforma
+                </button>
+                <p class="text-xs text-gray-400 text-center">
+                    ℹ️ Você só precisará fazer este cadastro uma vez
+                </p>
+            </div>
+        </div>
+    </div>
+
     <!-- Efeitos de fundo -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none">
         <div class="absolute top-0 left-0 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse-slow"></div>
@@ -36,7 +70,7 @@
         <div class="absolute bottom-0 left-1/2 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse-slow" style="animation-delay: 4s;"></div>
     </div>
 
-    <div class="relative z-10 p-4 md:p-8">
+    <div id="conteudoPrincipal" class="hidden relative z-10 p-4 md:p-8">
         <div class="max-w-7xl mx-auto space-y-8">
             
             <!-- Header Premium -->
@@ -58,194 +92,7 @@
                             <svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
                                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                             </svg>
-                            <span class="text-green-400 font-semibold px-4 py-2 bg-green-900/30 rounded-lg">Principal</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        let distanciaCalculada = 0;
-        let valorTotalCalculado = 0;
-        let origemAtual = '';
-        let destinoAtual = '';
-        const SENHA_ADMIN = 'lucas2024'; // Altere esta senha para maior segurança
-
-        function solicitarSenhaAdmin() {
-            const senha = prompt('🔐 Digite a senha do administrador:');
-            if (senha === SENHA_ADMIN) {
-                toggleAdmin();
-            } else if (senha !== null) {
-                alert('❌ Senha incorreta! Acesso negado.');
-            }
-        }
-
-        function toggleAdmin() {
-            document.getElementById('adminModal').classList.toggle('hidden');
-        }
-
-        function obterLocalizacao() {
-            const status = document.getElementById('locationStatus');
-            const origemInput = document.getElementById('origem');
-            status.classList.remove('hidden');
-            status.className = 'mt-3 p-3 glass rounded-lg text-sm text-cyan-300';
-            status.textContent = '🔄 Obtendo sua localização...';
-            
-            if (!navigator.geolocation) {
-                status.className = 'mt-3 p-3 glass rounded-lg text-sm text-red-300';
-                status.textContent = '❌ Geolocalização não suportada pelo navegador';
-                return;
-            }
-
-            navigator.geolocation.getCurrentPosition(
-                async (position) => {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-                    
-                    status.textContent = '🔄 Buscando endereço...';
-                    
-                    try {
-                        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=pt-BR`);
-                        const data = await response.json();
-                        
-                        const endereco = data.address;
-                        let enderecoFormatado = '';
-                        
-                        if (endereco.road) {
-                            enderecoFormatado = endereco.road;
-                            if (endereco.house_number) {
-                                enderecoFormatado += ', ' + endereco.house_number;
-                            }
-                            if (endereco.suburb || endereco.neighbourhood) {
-                                enderecoFormatado += ' - ' + (endereco.suburb || endereco.neighbourhood);
-                            }
-                            if (endereco.city || endereco.town) {
-                                enderecoFormatado += ', ' + (endereco.city || endereco.town);
-                            }
-                            if (endereco.state) {
-                                enderecoFormatado += ' - ' + endereco.state;
-                            }
-                        } else {
-                            enderecoFormatado = data.display_name;
-                        }
-                        
-                        origemInput.value = enderecoFormatado;
-                        status.className = 'mt-3 p-3 glass rounded-lg text-sm text-green-300';
-                        status.textContent = '✅ Localização obtida: ' + enderecoFormatado;
-                        setTimeout(() => status.classList.add('hidden'), 5000);
-                    } catch (error) {
-                        origemInput.value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-                        status.className = 'mt-3 p-3 glass rounded-lg text-sm text-yellow-300';
-                        status.textContent = '⚠️ Localização obtida (coordenadas)';
-                        setTimeout(() => status.classList.add('hidden'), 3000);
-                    }
-                },
-                (error) => {
-                    status.className = 'mt-3 p-3 glass rounded-lg text-sm text-red-300';
-                    status.textContent = '❌ Erro ao obter localização. Ative a permissão no navegador.';
-                }
-            );
-        }
-
-        function calcularRota() {
-            const origem = document.getElementById('origem').value;
-            const destino = document.getElementById('destino').value;
-
-            if (!origem || !destino) {
-                alert('⚠️ Por favor, preencha origem e destino!');
-                return;
-            }
-
-            origemAtual = origem;
-            destinoAtual = destino;
-
-            const km = Math.round(Math.random() * 30 + 10);
-            const valorKm = km * 2.50;
-            const total = valorKm + 10.00;
-
-            distanciaCalculada = km;
-            valorTotalCalculado = total;
-
-            document.getElementById('distanciaTexto').textContent = km + ' km';
-            document.getElementById('valorKm').textContent = 'R$ ' + valorKm.toFixed(2);
-            document.getElementById('valorTotal').textContent = 'R$ ' + total.toFixed(2);
-            document.getElementById('valorPagamento').textContent = 'R$ ' + total.toFixed(2);
-            document.getElementById('resultadoPreco').classList.remove('hidden');
-            document.getElementById('secaoPagamento').classList.remove('hidden');
-            document.getElementById('btnWhatsApp').classList.add('hidden');
-
-            adicionarMensagemChat('driver', `✅ Rota calculada! Distância: ${km} km. Valor total: R$ ${total.toFixed(2)}. Por favor, realize o pagamento antecipado via PIX.`);
-        }
-
-        function copiarPix() {
-            const chavePix = '14712258799';
-            navigator.clipboard.writeText(chavePix).then(() => {
-                alert('✅ Chave PIX copiada com sucesso!\n\n📋 ' + chavePix);
-            }).catch(() => {
-                alert('📋 Chave PIX: ' + chavePix + '\n\nCopie manualmente esta chave.');
-            });
-        }
-
-        function confirmarPagamento() {
-            const confirmacao = confirm('✅ Confirma que realizou o pagamento de R$ ' + valorTotalCalculado.toFixed(2) + ' via PIX?\n\nApós confirmar, você poderá enviar a solicitação pelo WhatsApp.');
-            if (confirmacao) {
-                document.getElementById('btnWhatsApp').classList.remove('hidden');
-                document.getElementById('secaoPagamento').style.opacity = '0.6';
-                adicionarMensagemChat('driver', '✅ Pagamento confirmado! Agora você pode enviar a solicitação pelo WhatsApp. Clique no botão verde abaixo.');
-                alert('✅ Obrigado! Agora clique no botão verde "Enviar Solicitação via WhatsApp" para confirmar sua corrida.');
-            }
-        }
-
-        function enviarMensagem() {
-            const input = document.getElementById('mensagemInput');
-            const mensagem = input.value.trim();
-            
-            if (!mensagem) return;
-
-            adicionarMensagemChat('user', mensagem);
-            input.value = '';
-
-            setTimeout(() => {
-                adicionarMensagemChat('driver', '✅ Mensagem recebida! Para solicitar uma corrida, use o formulário acima, calcule o valor e realize o pagamento via PIX.');
-            }, 500);
-        }
-
-        function enviarWhatsApp() {
-            const mensagem = `🚗 *Nova Solicitação de Corrida Premium*
-
-👤 *Motorista:* Lucas Santos
-📍 *Origem:* ${origemAtual}
-🎯 *Destino:* ${destinoAtual}
-📏 *Distância:* ${distanciaCalculada} km
-💰 *Valor:* R$ ${valorTotalCalculado.toFixed(2)}
-
-✅ *Pagamento via PIX realizado*
-💳 Chave PIX: 147.122.587-99
-
----
-🌟 Serviço Premium de Transporte
-⭐ Avaliação 4.9 | 1.247 corridas realizadas`;
-
-            const url = `https://wa.me/5527988668504?text=${encodeURIComponent(mensagem)}`;
-            window.open(url, '_blank');
-            
-            adicionarMensagemChat('driver', '✅ Redirecionando para WhatsApp... Aguarde o contato do motorista Lucas Santos!');
-        }
-
-        function adicionarMensagemChat(tipo, texto) {
-            const chat = document.getElementById('chatMessages');
-            const div = document.createElement('div');
-            div.className = tipo === 'user' 
-                ? 'p-4 rounded-2xl max-w-md bg-gradient-to-r from-purple-600 to-pink-600 text-white ml-auto text-right border border-purple-400/30 shadow-lg' 
-                : 'p-4 rounded-2xl max-w-md glass';
-            div.textContent = (tipo === 'user' ? '👤 ' : '👨‍💼 ') + texto;
-            chat.appendChild(div);
-            chat.scrollTop = chat.scrollHeight;
-        }
-    </script>
-</body>
-</html>text-yellow-400 font-semibold">Serviço 5 Estrelas</span>
+                            <span class="text-yellow-400 font-semibold">Serviço 5 Estrelas</span>
                         </div>
                     </div>
                 </div>
@@ -278,12 +125,13 @@
                     <div class="text-center">
                         <div class="relative inline-block mb-6">
                             <div class="w-40 h-40 mx-auto rounded-full bg-gradient-to-br from-purple-600 via-pink-600 to-cyan-600 p-1 shadow-2xl shadow-purple-500/50">
-                                <div class="w-full h-full rounded-full bg-slate-900 flex items-center justify-center text-7xl">
+                                <img id="fotoMotorista" src="" alt="Foto do Motorista" class="w-full h-full rounded-full object-cover bg-slate-900 hidden">
+                                <div id="avatarPadrao" class="w-full h-full rounded-full bg-slate-900 flex items-center justify-center text-7xl">
                                     👨‍💼
                                 </div>
                             </div>
-                            <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-yellow-400 to-orange-400 text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg">
-                                ⭐ 4.9
+                            <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-yellow-400 to-orange-400 text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg flex items-center gap-1">
+                                <span>⭐⭐⭐⭐⭐</span>
                             </div>
                         </div>
                         
@@ -340,8 +188,522 @@
                             <label class="block font-bold text-gray-200 mb-3">
                                 🟢 Local de Partida:
                             </label>
-                            <input type="text" id="origem" placeholder="Clique no botão abaixo para obter sua localização" class="w-full p-4 bg-slate-800 text-gray-200 border-2 border-slate-600 rounded-xl focus:border-purple-500 focus:outline-none transition-all duration-300 mb-3 placeholder-gray-500" readonly>
-                            <button onclick="obterLocalizacao()" class="w-full bg-gradient-to-r from-green-600 to-green-700 text-white p-4 rounded-xl font-bold hover:from-green-700 hover:to-green-800 transition-all duration-300 shadow-lg hover:shadow-green-500/50 hover:scale-[1.02]">
+                            <input type="text" id="origem" placeholder="Digite o endereço de origem ou use o GPS" class="w-full p-4 bg-slate-800 text-gray-200 border-2 border-slate-600 rounded-xl focus:border-purple-500 focus:outline-none transition-all duration-300 mb-3 placeholder-gray-500">
+                            <button onclick="enviarMensagem()" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-2xl font-bold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-purple-500/50">
+                        📤 Enviar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Admin -->
+    <div id="adminModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div class="glass rounded-3xl p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-purple-500/30 shadow-2xl">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-4xl font-bold text-transparent bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text">
+                    ⚙️ Painel Administrativo
+                </h2>
+                <button onclick="toggleAdmin()" class="bg-gradient-to-r from-red-600 to-red-700 text-white w-12 h-12 rounded-full font-bold text-2xl hover:from-red-700 hover:to-red-800 transition-all duration-300 hover:scale-110 shadow-lg">
+                    ×
+                </button>
+            </div>
+
+            <!-- Estatísticas de Visitantes -->
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                <div class="glass p-6 rounded-2xl">
+                    <h3 class="text-2xl font-bold text-cyan-400 mb-4">📊 Total de Visitantes</h3>
+                    <div class="text-5xl font-black text-center text-transparent bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text" id="totalVisitantes">
+                        0
+                    </div>
+                </div>
+                <div class="glass p-6 rounded-2xl">
+                    <h3 class="text-2xl font-bold text-green-400 mb-4">👥 Visitantes Hoje</h3>
+                    <div class="text-5xl font-black text-center text-transparent bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text" id="visitantesHoje">
+                        0
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lista de Visitantes -->
+            <div class="glass p-6 rounded-2xl mb-8">
+                <h3 class="text-2xl font-bold mb-4 text-gray-200">📋 Últimos Visitantes Cadastrados</h3>
+                <div class="space-y-3 max-h-64 overflow-y-auto" id="listaVisitantes">
+                    <!-- Lista será preenchida dinamicamente -->
+                </div>
+            </div>
+
+            <!-- Upload de Foto -->
+            <div class="glass p-6 rounded-2xl mb-8">
+                <h3 class="text-2xl font-bold mb-6 text-gray-200">
+                    📸 Foto do Perfil
+                </h3>
+                <div class="space-y-4">
+                    <input type="file" id="uploadFoto" accept="image/*" class="w-full p-4 bg-slate-800 text-gray-200 border-2 border-slate-600 rounded-xl focus:border-purple-500 focus:outline-none">
+                    <button onclick="atualizarFoto()" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-xl font-bold hover:from-blue-700 hover:to-blue-800 transition-all duration-300">
+                        Atualizar Foto do Perfil
+                    </button>
+                </div>
+            </div>
+
+            <div class="glass p-6 rounded-2xl mb-8">
+                <h3 class="text-2xl font-bold mb-6 text-gray-200">
+                    ➕ Adicionar Novo Motorista
+                </h3>
+                <div class="space-y-4">
+                    <input type="text" id="novoNome" placeholder="Nome completo do motorista" class="w-full p-4 bg-slate-800 text-gray-200 border-2 border-slate-600 rounded-xl focus:border-purple-500 focus:outline-none">
+                    <input type="number" id="novaIdade" placeholder="Idade" class="w-full p-4 bg-slate-800 text-gray-200 border-2 border-slate-600 rounded-xl focus:border-purple-500 focus:outline-none">
+                    <input type="text" id="novoTelefone" placeholder="WhatsApp (com DDD) ex: 27988668504" class="w-full p-4 bg-slate-800 text-gray-200 border-2 border-slate-600 rounded-xl focus:border-purple-500 focus:outline-none">
+                    <button onclick="alert('Motorista adicionado! (Funcionalidade demo)')" class="w-full bg-gradient-to-r from-green-600 to-green-700 text-white p-4 rounded-xl font-bold hover:from-green-700 hover:to-green-800 transition-all duration-300">
+                        Adicionar Motorista
+                    </button>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-2xl font-bold mb-4 text-gray-200">👥 Motoristas Cadastrados</h3>
+                <div class="space-y-3">
+                    <div class="glass p-4 rounded-xl flex justify-between items-center">
+                        <div>
+                            <div class="font-bold text-lg">Lucas Santos (27 anos)</div>
+                            <div class="text-sm text-gray-400">📱 5527988668504 | ⭐⭐⭐⭐⭐ | Disponível</div>
+                        </div>
+                        <span class="text-green-400 font-semibold px-4 py-2 bg-green-900/30 rounded-lg">Principal</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let distanciaCalculada = 0;
+        let valorTotalCalculado = 0;
+        let origemAtual = '';
+        let destinoAtual = '';
+        let latOrigem = null;
+        let lngOrigem = null;
+        const SENHA_ADMIN = 'lucas2024';
+        let visitantes = [];
+        let totalAcessos = 0;
+
+        // Verificar se usuário já está cadastrado ao carregar a página
+        window.onload = function() {
+            const usuarioCadastrado = localStorage.getItem('usuarioCadastrado');
+            if (usuarioCadastrado) {
+                // Usuário já cadastrado, liberar acesso direto
+                document.getElementById('modalCadastro').classList.add('hidden');
+                document.getElementById('conteudoPrincipal').classList.remove('hidden');
+                
+                // Carregar dados do usuário
+                const dadosUsuario = JSON.parse(usuarioCadastrado);
+                console.log('Bem-vindo de volta:', dadosUsuario.nome);
+            }
+            
+            // Carregar foto salva
+            const fotoSalva = localStorage.getItem('fotoMotorista');
+            if (fotoSalva) {
+                const foto = document.getElementById('fotoMotorista');
+                const avatar = document.getElementById('avatarPadrao');
+                foto.src = fotoSalva;
+                foto.classList.remove('hidden');
+                avatar.classList.add('hidden');
+            }
+        };
+
+        // Formatar CPF
+        document.getElementById('cadastroCPF')?.addEventListener('input', function(e) {
+            let valor = e.target.value.replace(/\D/g, '');
+            if (valor.length <= 11) {
+                valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
+                valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
+                valor = valor.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                e.target.value = valor;
+            }
+        });
+
+        // Formatar Telefone
+        document.getElementById('cadastroTelefone')?.addEventListener('input', function(e) {
+            let valor = e.target.value.replace(/\D/g, '');
+            if (valor.length <= 11) {
+                valor = valor.replace(/(\d{2})(\d)/, '($1) $2');
+                valor = valor.replace(/(\d{5})(\d)/, '$1-$2');
+                e.target.value = valor;
+            }
+        });
+
+        function realizarCadastro() {
+            const nome = document.getElementById('cadastroNome').value;
+            const cpf = document.getElementById('cadastroCPF').value;
+            const telefone = document.getElementById('cadastroTelefone').value;
+
+            if (!nome || !cpf || !telefone) {
+                alert('❌ Por favor, preencha todos os campos!');
+                return;
+            }
+
+            if (cpf.replace(/\D/g, '').length !== 11) {
+                alert('❌ CPF inválido! Digite 11 dígitos.');
+                return;
+            }
+
+            if (telefone.replace(/\D/g, '').length < 10) {
+                alert('❌ Telefone inválido!');
+                return;
+            }
+
+            // Salvar dados do usuário
+            const visitante = {
+                nome,
+                cpf,
+                telefone,
+                data: new Date().toLocaleString('pt-BR')
+            };
+            
+            // Salvar no localStorage para acesso automático futuro
+            localStorage.setItem('usuarioCadastrado', JSON.stringify(visitante));
+            
+            // Adicionar à lista de visitantes
+            visitantes.push(visitante);
+            totalAcessos++;
+            salvarDados();
+
+            // Ocultar modal e mostrar conteúdo
+            document.getElementById('modalCadastro').classList.add('hidden');
+            document.getElementById('conteudoPrincipal').classList.remove('hidden');
+            alert('✅ Cadastro realizado com sucesso! Bem-vindo, ' + nome + '!\n\nVocê não precisará se cadastrar novamente.');
+        }
+
+        function salvarDados() {
+            // Salvar lista de visitantes no localStorage
+            const visitantesAtuais = JSON.parse(localStorage.getItem('listaVisitantes') || '[]');
+            visitantesAtuais.push(...visitantes);
+            localStorage.setItem('listaVisitantes', JSON.stringify(visitantesAtuais));
+            visitantes = visitantesAtuais;
+        }
+
+        function solicitarSenhaAdmin() {
+            const senha = prompt('🔐 Digite a senha do administrador:');
+            if (senha === SENHA_ADMIN) {
+                carregarEstatisticas();
+                toggleAdmin();
+            } else if (senha !== null) {
+                alert('❌ Senha incorreta! Acesso negado.');
+            }
+        }
+
+        function carregarEstatisticas() {
+            // Carregar visitantes do localStorage
+            const visitantesArmazenados = JSON.parse(localStorage.getItem('listaVisitantes') || '[]');
+            visitantes = visitantesArmazenados;
+
+            document.getElementById('totalVisitantes').textContent = visitantes.length;
+            
+            const hoje = new Date().toLocaleDateString('pt-BR');
+            const visitantesHoje = visitantes.filter(v => v.data.split(',')[0] === hoje).length;
+            document.getElementById('visitantesHoje').textContent = visitantesHoje;
+
+            const lista = document.getElementById('listaVisitantes');
+            lista.innerHTML = '';
+            
+            visitantes.slice().reverse().slice(0, 10).forEach(v => {
+                const div = document.createElement('div');
+                div.className = 'glass p-3 rounded-lg';
+                div.innerHTML = `
+                    <div class="font-semibold text-gray-200">${v.nome}</div>
+                    <div class="text-sm text-gray-400">CPF: ${v.cpf} | Tel: ${v.telefone}</div>
+                    <div class="text-xs text-gray-500">Acesso: ${v.data}</div>
+                `;
+                lista.appendChild(div);
+            });
+
+            if (visitantes.length === 0) {
+                lista.innerHTML = '<div class="text-gray-400 text-center p-4">Nenhum visitante ainda</div>';
+            }
+        }
+
+        function toggleAdmin() {
+            document.getElementById('adminModal').classList.toggle('hidden');
+        }
+
+        function atualizarFoto() {
+            const input = document.getElementById('uploadFoto');
+            const file = input.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const foto = document.getElementById('fotoMotorista');
+                    const avatar = document.getElementById('avatarPadrao');
+                    foto.src = e.target.result;
+                    foto.classList.remove('hidden');
+                    avatar.classList.add('hidden');
+                    
+                    // Salvar foto no localStorage
+                    localStorage.setItem('fotoMotorista', e.target.result);
+                    alert('✅ Foto atualizada com sucesso!');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                alert('❌ Selecione uma foto primeiro!');
+            }
+        }
+
+        function obterLocalizacao() {
+            const status = document.getElementById('locationStatus');
+            const origemInput = document.getElementById('origem');
+            status.classList.remove('hidden');
+            status.className = 'mt-3 p-3 glass rounded-lg text-sm text-cyan-300';
+            status.textContent = '🔄 Obtendo sua localização...';
+            
+            if (!navigator.geolocation) {
+                status.className = 'mt-3 p-3 glass rounded-lg text-sm text-red-300';
+                status.textContent = '❌ Geolocalização não suportada pelo navegador';
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    latOrigem = position.coords.latitude;
+                    lngOrigem = position.coords.longitude;
+                    
+                    status.textContent = '🔄 Buscando endereço...';
+                    
+                    try {
+                        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latOrigem}&lon=${lngOrigem}&accept-language=pt-BR`);
+                        const data = await response.json();
+                        
+                        const endereco = data.address;
+                        let enderecoFormatado = '';
+                        
+                        if (endereco.road) {
+                            enderecoFormatado = endereco.road;
+                            if (endereco.house_number) enderecoFormatado += ', ' + endereco.house_number;
+                            if (endereco.suburb || endereco.neighbourhood) enderecoFormatado += ' - ' + (endereco.suburb || endereco.neighbourhood);
+                            if (endereco.city || endereco.town) enderecoFormatado += ', ' + (endereco.city || endereco.town);
+                            if (endereco.state) enderecoFormatado += ' - ' + endereco.state;
+                        } else {
+                            enderecoFormatado = data.display_name;
+                        }
+                        
+                        origemInput.value = enderecoFormatado;
+                        status.className = 'mt-3 p-3 glass rounded-lg text-sm text-green-300';
+                        status.textContent = '✅ Localização obtida: ' + enderecoFormatado;
+                        setTimeout(() => status.classList.add('hidden'), 5000);
+                    } catch (error) {
+                        origemInput.value = `${latOrigem.toFixed(6)}, ${lngOrigem.toFixed(6)}`;
+                        status.className = 'mt-3 p-3 glass rounded-lg text-sm text-yellow-300';
+                        status.textContent = '⚠️ Localização obtida (coordenadas)';
+                        setTimeout(() => status.classList.add('hidden'), 3000);
+                    }
+                },
+                (error) => {
+                    status.className = 'mt-3 p-3 glass rounded-lg text-sm text-red-300';
+                    status.textContent = '❌ Erro ao obter localização. Ative a permissão no navegador.';
+                }
+            );
+        }
+
+        function abrirGoogleMaps() {
+            const destino = document.getElementById('destino').value;
+            const origem = document.getElementById('origem').value;
+            
+            if (!destino) {
+                alert('❌ Digite o endereço de destino primeiro!');
+                return;
+            }
+            
+            let url;
+            
+            // Tentar usar coordenadas GPS primeiro
+            if (latOrigem && lngOrigem) {
+                url = `https://www.google.com/maps/dir/${latOrigem},${lngOrigem}/${encodeURIComponent(destino)}`;
+            } 
+            // Se não tiver GPS mas tiver endereço de origem
+            else if (origem && origem.trim() !== '') {
+                url = `https://www.google.com/maps/dir/${encodeURIComponent(origem)}/${encodeURIComponent(destino)}`;
+            } 
+            // Se não tiver origem, apenas mostrar o destino
+            else {
+                url = `https://www.google.com/maps/search/${encodeURIComponent(destino)}`;
+            }
+            
+            // Tentar abrir de múltiplas formas para garantir funcionamento
+            try {
+                // Método 1: window.open
+                const novaAba = window.open(url, '_blank', 'noopener,noreferrer');
+                
+                // Método 2: se window.open falhar, usar link direto
+                if (!novaAba || novaAba.closed || typeof novaAba.closed === 'undefined') {
+                    // Criar link temporário e clicar
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.target = '_blank';
+                    link.rel = 'noopener noreferrer';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+                
+                adicionarMensagemChat('driver', '🗺️ Abrindo rota no Google Maps...');
+            } catch (error) {
+                // Se tudo falhar, mostrar URL para copiar
+                alert('📋 Copie este link e abra no navegador:\n\n' + url);
+            }
+        }
+
+        function abrirWaze() {
+            const destino = document.getElementById('destino').value;
+            const origem = document.getElementById('origem').value;
+            
+            if (!destino) {
+                alert('❌ Digite o endereço de destino primeiro!');
+                return;
+            }
+            
+            let url;
+            
+            // Formato do Waze
+            if (latOrigem && lngOrigem) {
+                url = `https://waze.com/ul?ll=${latOrigem},${lngOrigem}&navigate=yes&q=${encodeURIComponent(destino)}`;
+            } else if (origem && origem.trim() !== '') {
+                url = `https://waze.com/ul?q=${encodeURIComponent(destino)}&navigate=yes`;
+            } else {
+                url = `https://waze.com/ul?q=${encodeURIComponent(destino)}`;
+            }
+            
+            // Tentar abrir de múltiplas formas
+            try {
+                const novaAba = window.open(url, '_blank', 'noopener,noreferrer');
+                
+                if (!novaAba || novaAba.closed || typeof novaAba.closed === 'undefined') {
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.target = '_blank';
+                    link.rel = 'noopener noreferrer';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+                
+                adicionarMensagemChat('driver', '🚗 Abrindo rota no Waze...');
+            } catch (error) {
+                alert('📋 Copie este link e abra no navegador:\n\n' + url);
+            }
+        }
+
+        function calcularRota() {
+            const origem = document.getElementById('origem').value;
+            const destino = document.getElementById('destino').value;
+
+            if (!origem || !destino) {
+                alert('⚠️ Por favor, preencha origem e destino!');
+                return;
+            }
+
+            origemAtual = origem;
+            destinoAtual = destino;
+
+            // Simulação de cálculo de distância
+            const km = Math.round(Math.random() * 30 + 10);
+            
+            // Definir valores baseados na distância da Grande Vitória
+            let valorPorKm, taxaBase;
+            
+            if (km <= 50) {
+                valorPorKm = 3.50;
+                taxaBase = 8.00;
+                document.getElementById('taxaDescricao').textContent = 'Valor por km (Grande Vitória):';
+            } else {
+                valorPorKm = 4.50;
+                taxaBase = 15.00;
+                document.getElementById('taxaDescricao').textContent = 'Valor por km (Fora da Grande Vitória):';
+            }
+
+            const valorKm = km * valorPorKm;
+            const total = valorKm + taxaBase;
+
+            distanciaCalculada = km;
+            valorTotalCalculado = total;
+
+            document.getElementById('distanciaTexto').textContent = km + ' km';
+            document.getElementById('valorKm').textContent = 'R$ ' + valorKm.toFixed(2);
+            document.getElementById('taxaBase').textContent = 'R$ ' + taxaBase.toFixed(2);
+            document.getElementById('valorTotal').textContent = 'R$ ' + total.toFixed(2);
+            document.getElementById('valorPagamento').textContent = 'R$ ' + total.toFixed(2);
+            document.getElementById('resultadoPreco').classList.remove('hidden');
+            document.getElementById('secaoPagamento').classList.remove('hidden');
+            document.getElementById('btnWhatsApp').classList.remove('hidden');
+
+            const tipoViagem = km <= 50 ? 'Grande Vitória' : 'Fora da Grande Vitória';
+            adicionarMensagemChat('driver', `✅ Rota calculada! Distância: ${km} km (${tipoViagem}). Valor total: R$ ${total.toFixed(2)}. O pagamento pode ser feito diretamente ao motorista ou via PIX (opcional).`);
+        }
+
+        function copiarPix() {
+            const chavePix = '14712258799';
+            navigator.clipboard.writeText(chavePix).then(() => {
+                alert('✅ Chave PIX copiada com sucesso!\n\n📋 ' + chavePix);
+            }).catch(() => {
+                alert('📋 Chave PIX: ' + chavePix + '\n\nCopie manualmente esta chave.');
+            });
+        }
+
+        function confirmarPagamento() {
+            alert('✅ Pagamento confirmado! Você pode enviar a solicitação pelo WhatsApp agora.');
+            document.getElementById('secaoPagamento').style.opacity = '0.6';
+            adicionarMensagemChat('driver', '✅ Pagamento PIX confirmado! Obrigado pela preferência.');
+        }
+
+        function enviarMensagem() {
+            const input = document.getElementById('mensagemInput');
+            const mensagem = input.value.trim();
+            
+            if (!mensagem) return;
+
+            adicionarMensagemChat('user', mensagem);
+            input.value = '';
+
+            setTimeout(() => {
+                adicionarMensagemChat('driver', '✅ Mensagem recebida! Para solicitar uma corrida, use o formulário acima e calcule o valor.');
+            }, 500);
+        }
+
+        function enviarWhatsApp() {
+            const pagamentoPix = document.getElementById('secaoPagamento').style.opacity === '0.6' ? 'Sim' : 'Não confirmado';
+            
+            const mensagem = `🚗 *Nova Solicitação de Corrida Premium*
+
+👤 *Motorista:* Lucas Santos
+📍 *Origem:* ${origemAtual}
+🎯 *Destino:* ${destinoAtual}
+📏 *Distância:* ${distanciaCalculada} km
+💰 *Valor:* R$ ${valorTotalCalculado.toFixed(2)}
+
+💳 *Pagamento PIX antecipado:* ${pagamentoPix}
+${pagamentoPix === 'Sim' ? '✅ Chave PIX: 147.122.587-99' : '💵 Pagamento direto ao motorista'}
+
+---
+🌟 Serviço Premium de Transporte
+⭐⭐⭐⭐⭐ Avaliação 5 Estrelas | 1.247 corridas realizadas`;
+
+            const url = `https://wa.me/5527988668504?text=${encodeURIComponent(mensagem)}`;
+            window.open(url, '_blank');
+            
+            adicionarMensagemChat('driver', '✅ Redirecionando para WhatsApp... Aguarde o contato do motorista Lucas Santos!');
+        }
+
+        function adicionarMensagemChat(tipo, texto) {
+            const chat = document.getElementById('chatMessages');
+            const div = document.createElement('div');
+            div.className = tipo === 'user' 
+                ? 'p-4 rounded-2xl max-w-md bg-gradient-to-r from-purple-600 to-pink-600 text-white ml-auto text-right border border-purple-400/30 shadow-lg' 
+                : 'p-4 rounded-2xl max-w-md glass';
+            div.textContent = (tipo === 'user' ? '👤 ' : '👨‍💼 ') + texto;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        }
+    </script>
+</body>
+</html>="obterLocalizacao()" class="w-full bg-gradient-to-r from-green-600 to-green-700 text-white p-4 rounded-xl font-bold hover:from-green-700 hover:to-green-800 transition-all duration-300 shadow-lg hover:shadow-green-500/50 hover:scale-[1.02]">
                                 🧭 Usar Minha Localização GPS
                             </button>
                             <div id="locationStatus" class="mt-3 hidden p-3 glass rounded-lg text-sm"></div>
@@ -351,7 +713,10 @@
                             <label class="block font-bold text-gray-200 mb-3">
                                 🔴 Local de Destino:
                             </label>
-                            <input type="text" id="destino" placeholder="Digite o endereço de destino" class="w-full p-4 bg-slate-800 text-gray-200 border-2 border-slate-600 rounded-xl focus:border-purple-500 focus:outline-none transition-all duration-300 placeholder-gray-500">
+                            <input type="text" id="destino" placeholder="Digite o endereço de destino" class="w-full p-4 bg-slate-800 text-gray-200 border-2 border-slate-600 rounded-xl focus:border-purple-500 focus:outline-none transition-all duration-300 mb-3 placeholder-gray-500">
+                            <button onclick="abrirMaps()" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-xl font-bold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-lg hover:scale-[1.02]">
+                                🗺️ Abrir no Google Maps
+                            </button>
                         </div>
                     </div>
 
@@ -367,12 +732,12 @@
                         
                         <div class="space-y-3 mb-5">
                             <div class="flex justify-between items-center p-3 bg-white/5 rounded-lg">
-                                <span class="text-gray-300">Valor por km (R$ 2,50):</span>
+                                <span class="text-gray-300" id="taxaDescricao">Valor por km:</span>
                                 <span class="font-bold text-xl" id="valorKm">R$ 0,00</span>
                             </div>
                             <div class="flex justify-between items-center p-3 bg-white/5 rounded-lg">
                                 <span class="text-gray-300">Taxa base:</span>
-                                <span class="font-bold text-xl">R$ 10,00</span>
+                                <span class="font-bold text-xl" id="taxaBase">R$ 10,00</span>
                             </div>
                         </div>
                         
@@ -389,11 +754,16 @@
                         </div>
                     </div>
 
-                    <!-- Seção de Pagamento PIX -->
-                    <div id="secaoPagamento" class="hidden mt-6 glass border-2 border-green-500/50 p-6 rounded-2xl">
-                        <h3 class="text-2xl font-bold text-center mb-4 text-transparent bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text">
-                            💳 Pagamento Antecipado via PIX
+                    <!-- Seção de Pagamento PIX (OPCIONAL) -->
+                    <div id="secaoPagamento" class="hidden mt-6 glass border-2 border-blue-500/50 p-6 rounded-2xl">
+                        <h3 class="text-2xl font-bold text-center mb-4 text-transparent bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text">
+                            💳 Pagamento Antecipado (Opcional)
                         </h3>
+                        <div class="bg-blue-900/20 border border-blue-500/30 rounded-xl p-4 mb-4">
+                            <p class="text-blue-200 text-sm text-center">
+                                ℹ️ O pagamento antecipado é <strong>opcional</strong>. Você pode pagar diretamente ao motorista ou usar PIX agora.
+                            </p>
+                        </div>
                         <div class="bg-white/10 backdrop-blur-sm rounded-xl p-5 mb-4 text-center">
                             <div class="text-sm text-gray-300 mb-2">Chave PIX (CPF)</div>
                             <div class="text-2xl font-bold text-green-400 mb-3">147.122.587-99</div>
@@ -403,11 +773,11 @@
                         </div>
                         <div class="bg-gradient-to-r from-yellow-900/30 to-orange-900/30 border border-yellow-500/30 rounded-xl p-4 mb-4">
                             <p class="text-yellow-200 text-sm text-center">
-                                ⚠️ Realize o pagamento antecipado de <strong id="valorPagamento">R$ 0,00</strong> via PIX antes da corrida
+                                💰 Valor: <strong id="valorPagamento">R$ 0,00</strong>
                             </p>
                         </div>
                         <button onclick="confirmarPagamento()" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white p-4 rounded-xl font-bold hover:from-green-700 hover:to-emerald-700 transition-all duration-300">
-                            ✅ Já realizei o pagamento
+                            ✅ Já realizei o pagamento PIX
                         </button>
                     </div>
 
@@ -427,7 +797,6 @@
                 </p>
 
                 <div class="grid md:grid-cols-2 gap-6">
-                    <!-- Buda -->
                     <div class="glass rounded-2xl p-6 hover:scale-[1.02] transition-all duration-300 border border-purple-500/20">
                         <div class="text-6xl text-center mb-4">🧘</div>
                         <h3 class="text-2xl font-bold text-purple-400 mb-3 text-center">Buda de Ibiraçu</h3>
@@ -440,7 +809,6 @@
                         </div>
                     </div>
 
-                    <!-- Pedra Azul -->
                     <div class="glass rounded-2xl p-6 hover:scale-[1.02] transition-all duration-300 border border-blue-500/20">
                         <div class="text-6xl text-center mb-4">⛰️</div>
                         <h3 class="text-2xl font-bold text-blue-400 mb-3 text-center">Pedra Azul</h3>
@@ -453,7 +821,6 @@
                         </div>
                     </div>
 
-                    <!-- Piscinas Naturais -->
                     <div class="glass rounded-2xl p-6 hover:scale-[1.02] transition-all duration-300 border border-cyan-500/20">
                         <div class="text-6xl text-center mb-4">🏊</div>
                         <h3 class="text-2xl font-bold text-cyan-400 mb-3 text-center">Piscinas Naturais - Pedra Azul</h3>
@@ -466,7 +833,6 @@
                         </div>
                     </div>
 
-                    <!-- Guarapari -->
                     <div class="glass rounded-2xl p-6 hover:scale-[1.02] transition-all duration-300 border border-yellow-500/20">
                         <div class="text-6xl text-center mb-4">🏖️</div>
                         <h3 class="text-2xl font-bold text-yellow-400 mb-3 text-center">Guarapari</h3>
@@ -479,7 +845,6 @@
                         </div>
                     </div>
 
-                    <!-- Coqueiral de Aracruz -->
                     <div class="glass rounded-2xl p-6 hover:scale-[1.02] transition-all duration-300 border border-green-500/20">
                         <div class="text-6xl text-center mb-4">🌴</div>
                         <h3 class="text-2xl font-bold text-green-400 mb-3 text-center">Coqueiral de Aracruz</h3>
@@ -492,7 +857,6 @@
                         </div>
                     </div>
 
-                    <!-- Convento da Penha -->
                     <div class="glass rounded-2xl p-6 hover:scale-[1.02] transition-all duration-300 border border-pink-500/20">
                         <div class="text-6xl text-center mb-4">⛪</div>
                         <h3 class="text-2xl font-bold text-pink-400 mb-3 text-center">Convento da Penha</h3>
@@ -532,46 +896,5 @@
 
                 <div class="p-6 bg-slate-900/90 border-t-2 border-purple-500/20 flex gap-3">
                     <input type="text" id="mensagemInput" placeholder="Digite sua mensagem..." class="flex-1 p-4 bg-slate-800 text-gray-200 border-2 border-slate-600 rounded-2xl focus:border-purple-500 focus:outline-none transition-all duration-300 placeholder-gray-500" onkeypress="if(event.key==='Enter') enviarMensagem()">
-                    <button onclick="enviarMensagem()" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-2xl font-bold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-purple-500/50">
-                        📤 Enviar
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+                    <button onclick
 
-    <!-- Modal Admin -->
-    <div id="adminModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div class="glass rounded-3xl p-8 max-w-3xl w-full max-h-[90vh] overflow-y-auto border border-purple-500/30 shadow-2xl">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-4xl font-bold text-transparent bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text">
-                    ⚙️ Painel Administrativo
-                </h2>
-                <button onclick="toggleAdmin()" class="bg-gradient-to-r from-red-600 to-red-700 text-white w-12 h-12 rounded-full font-bold text-2xl hover:from-red-700 hover:to-red-800 transition-all duration-300 hover:scale-110 shadow-lg">
-                    ×
-                </button>
-            </div>
-
-            <div class="glass p-6 rounded-2xl mb-8">
-                <h3 class="text-2xl font-bold mb-6 text-gray-200">
-                    ➕ Adicionar Novo Motorista
-                </h3>
-                <div class="space-y-4">
-                    <input type="text" id="novoNome" placeholder="Nome completo do motorista" class="w-full p-4 bg-slate-800 text-gray-200 border-2 border-slate-600 rounded-xl focus:border-purple-500 focus:outline-none">
-                    <input type="number" id="novaIdade" placeholder="Idade" class="w-full p-4 bg-slate-800 text-gray-200 border-2 border-slate-600 rounded-xl focus:border-purple-500 focus:outline-none">
-                    <input type="text" id="novoTelefone" placeholder="WhatsApp (com DDD) ex: 27988668504" class="w-full p-4 bg-slate-800 text-gray-200 border-2 border-slate-600 rounded-xl focus:border-purple-500 focus:outline-none">
-                    <button onclick="alert('Motorista adicionado! (Funcionalidade demo)')" class="w-full bg-gradient-to-r from-green-600 to-green-700 text-white p-4 rounded-xl font-bold hover:from-green-700 hover:to-green-800 transition-all duration-300">
-                        Adicionar Motorista
-                    </button>
-                </div>
-            </div>
-
-            <div>
-                <h3 class="text-2xl font-bold mb-4 text-gray-200">👥 Motoristas Cadastrados</h3>
-                <div class="space-y-3">
-                    <div class="glass p-4 rounded-xl flex justify-between items-center">
-                        <div>
-                            <div class="font-bold text-lg">Lucas Santos (27 anos)</div>
-                            <div class="text-sm text-gray-400">📱 5527988668504 | ⭐ 4.9 | Disponível</div>
-                        </div>
-                        <span class="
