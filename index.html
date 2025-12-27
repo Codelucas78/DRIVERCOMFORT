@@ -189,7 +189,205 @@
                                 🟢 Local de Partida:
                             </label>
                             <input type="text" id="origem" placeholder="Digite o endereço de origem ou use o GPS" class="w-full p-4 bg-slate-800 text-gray-200 border-2 border-slate-600 rounded-xl focus:border-purple-500 focus:outline-none transition-all duration-300 mb-3 placeholder-gray-500">
-                            <button onclick="enviarMensagem()" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-2xl font-bold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-purple-500/50">
+                            <button onclick="obterLocalizacao()" class="w-full bg-gradient-to-r from-green-600 to-green-700 text-white p-4 rounded-xl font-bold hover:from-green-700 hover:to-green-800 transition-all duration-300 shadow-lg hover:shadow-green-500/50 hover:scale-[1.02]">
+                                🧭 Usar Minha Localização GPS
+                            </button>
+                            <div id="locationStatus" class="mt-3 hidden p-3 glass rounded-lg text-sm"></div>
+                        </div>
+
+                        <div>
+                            <label class="block font-bold text-gray-200 mb-3">
+                                🔴 Local de Destino:
+                            </label>
+                            <input type="text" id="destino" placeholder="Digite o endereço de destino" class="w-full p-4 bg-slate-800 text-gray-200 border-2 border-slate-600 rounded-xl focus:border-purple-500 focus:outline-none transition-all duration-300 mb-3 placeholder-gray-500">
+                            <div class="grid grid-cols-2 gap-3">
+                                <button onclick="abrirGoogleMaps()" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-xl font-bold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-lg hover:scale-[1.02]">
+                                    🗺️ Google Maps
+                                </button>
+                                <button onclick="abrirWaze()" class="bg-gradient-to-r from-cyan-600 to-cyan-700 text-white p-4 rounded-xl font-bold hover:from-cyan-700 hover:to-cyan-800 transition-all duration-300 shadow-lg hover:scale-[1.02]">
+                                    🚗 Waze
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="calcularRota()" class="w-full bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-600 text-white p-5 rounded-2xl font-bold text-lg hover:shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-[1.02]">
+                        💰 Calcular Valor da Corrida
+                    </button>
+
+                    <div id="resultadoPreco" class="hidden mt-6 glass border-2 border-purple-500/50 p-6 rounded-2xl shadow-2xl">
+                        <div class="bg-white/10 backdrop-blur-sm rounded-xl p-3 mb-5 text-center">
+                            <div class="text-sm text-purple-200 mb-1">Distância Calculada</div>
+                            <div class="text-3xl font-bold" id="distanciaTexto">0 km</div>
+                        </div>
+                        
+                        <div class="space-y-3 mb-5">
+                            <div class="flex justify-between items-center p-3 bg-white/5 rounded-lg">
+                                <span class="text-gray-300" id="taxaDescricao">Valor por km:</span>
+                                <span class="font-bold text-xl" id="valorKm">R$ 0,00</span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-white/5 rounded-lg">
+                                <span class="text-gray-300">Taxa base:</span>
+                                <span class="font-bold text-xl" id="taxaBase">R$ 10,00</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-r from-yellow-500 to-orange-500 p-5 rounded-xl text-center shadow-lg">
+                            <div class="text-sm opacity-90 mb-1">Valor Total</div>
+                            <div class="text-4xl font-black" id="valorTotal">R$ 0,00</div>
+                        </div>
+
+                        <div class="mt-6 text-center p-5 bg-gradient-to-r from-green-900/30 to-emerald-900/30 rounded-xl border border-green-500/30">
+                            <div class="text-green-400 text-2xl font-bold mb-2">
+                                ✅ Motorista Disponível
+                            </div>
+                            <p class="text-gray-300">Lucas Santos está pronto para sua corrida!</p>
+                        </div>
+                    </div>
+
+                    <!-- Seção de Pagamento PIX (OPCIONAL) -->
+                    <div id="secaoPagamento" class="hidden mt-6 glass border-2 border-blue-500/50 p-6 rounded-2xl">
+                        <h3 class="text-2xl font-bold text-center mb-4 text-transparent bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text">
+                            💳 Pagamento Antecipado (Opcional)
+                        </h3>
+                        <div class="bg-blue-900/20 border border-blue-500/30 rounded-xl p-4 mb-4">
+                            <p class="text-blue-200 text-sm text-center">
+                                ℹ️ O pagamento antecipado é <strong>opcional</strong>. Você pode pagar diretamente ao motorista ou usar PIX agora.
+                            </p>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-sm rounded-xl p-5 mb-4 text-center">
+                            <div class="text-sm text-gray-300 mb-2">Chave PIX (CPF)</div>
+                            <div class="text-2xl font-bold text-green-400 mb-3">147.122.587-99</div>
+                            <button onclick="copiarPix()" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-2 rounded-lg font-bold hover:from-purple-700 hover:to-pink-700 transition-all duration-300">
+                                📋 Copiar Chave PIX
+                            </button>
+                        </div>
+                        <div class="bg-gradient-to-r from-yellow-900/30 to-orange-900/30 border border-yellow-500/30 rounded-xl p-4 mb-4">
+                            <p class="text-yellow-200 text-sm text-center">
+                                💰 Valor: <strong id="valorPagamento">R$ 0,00</strong>
+                            </p>
+                        </div>
+                        <button onclick="confirmarPagamento()" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white p-4 rounded-xl font-bold hover:from-green-700 hover:to-emerald-700 transition-all duration-300">
+                            ✅ Já realizei o pagamento PIX
+                        </button>
+                    </div>
+
+                    <button onclick="enviarWhatsApp()" id="btnWhatsApp" class="hidden w-full mt-4 bg-gradient-to-r from-green-600 to-green-700 text-white p-5 rounded-2xl font-bold text-lg hover:from-green-700 hover:to-green-800 transition-all duration-300 shadow-lg hover:shadow-green-500/50 hover:scale-[1.02]">
+                        📱 Enviar Solicitação via WhatsApp
+                    </button>
+                </div>
+            </div>
+
+            <!-- Seção de Turismo -->
+            <div class="glass rounded-3xl shadow-2xl p-8">
+                <h2 class="text-4xl font-bold text-center text-transparent bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text mb-4">
+                    🏝️ Turismo no Espírito Santo
+                </h2>
+                <p class="text-gray-300 text-center mb-8 text-lg">
+                    Conheça os principais pontos turísticos com nosso serviço premium
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="glass rounded-2xl p-6 hover:scale-[1.02] transition-all duration-300 border border-purple-500/20">
+                        <div class="text-6xl text-center mb-4">🧘</div>
+                        <h3 class="text-2xl font-bold text-purple-400 mb-3 text-center">Buda de Ibiraçu</h3>
+                        <p class="text-gray-300 mb-4">
+                            Monumento budista com 35 metros de altura. Um dos maiores budas da América Latina, ideal para meditação e contemplação.
+                        </p>
+                        <div class="flex items-center justify-between text-sm text-gray-400">
+                            <span>📍 Ibiraçu - ES</span>
+                            <span>⏱️ ~45 min de Vitória</span>
+                        </div>
+                    </div>
+
+                    <div class="glass rounded-2xl p-6 hover:scale-[1.02] transition-all duration-300 border border-blue-500/20">
+                        <div class="text-6xl text-center mb-4">⛰️</div>
+                        <h3 class="text-2xl font-bold text-blue-400 mb-3 text-center">Pedra Azul</h3>
+                        <p class="text-gray-300 mb-4">
+                            Cartão postal capixaba! Formação rochosa que muda de cor durante o dia. Parque estadual com trilhas e natureza exuberante.
+                        </p>
+                        <div class="flex items-center justify-between text-sm text-gray-400">
+                            <span>📍 Domingos Martins</span>
+                            <span>⏱️ ~2h de Vitória</span>
+                        </div>
+                    </div>
+
+                    <div class="glass rounded-2xl p-6 hover:scale-[1.02] transition-all duration-300 border border-cyan-500/20">
+                        <div class="text-6xl text-center mb-4">🏊</div>
+                        <h3 class="text-2xl font-bold text-cyan-400 mb-3 text-center">Piscinas Naturais - Pedra Azul</h3>
+                        <p class="text-gray-300 mb-4">
+                            Trilhas que levam às piscinas naturais de água cristalina. Experiência única de conexão com a natureza e banhos refrescantes.
+                        </p>
+                        <div class="flex items-center justify-between text-sm text-gray-400">
+                            <span>📍 Domingos Martins</span>
+                            <span>⏱️ ~2h de Vitória</span>
+                        </div>
+                    </div>
+
+                    <div class="glass rounded-2xl p-6 hover:scale-[1.02] transition-all duration-300 border border-yellow-500/20">
+                        <div class="text-6xl text-center mb-4">🏖️</div>
+                        <h3 class="text-2xl font-bold text-yellow-400 mb-3 text-center">Guarapari</h3>
+                        <p class="text-gray-300 mb-4">
+                            Praias paradisíacas com areias monazíticas. Conhecida como a "Capital da Saúde" com mais de 50 praias para você explorar.
+                        </p>
+                        <div class="flex items-center justify-between text-sm text-gray-400">
+                            <span>📍 Guarapari - ES</span>
+                            <span>⏱️ ~1h de Vitória</span>
+                        </div>
+                    </div>
+
+                    <div class="glass rounded-2xl p-6 hover:scale-[1.02] transition-all duration-300 border border-green-500/20">
+                        <div class="text-6xl text-center mb-4">🌴</div>
+                        <h3 class="text-2xl font-bold text-green-400 mb-3 text-center">Coqueiral de Aracruz</h3>
+                        <p class="text-gray-300 mb-4">
+                            Extensa faixa de coqueiros à beira-mar. Perfeito para relaxar, caminhar e apreciar o pôr do sol tropical capixaba.
+                        </p>
+                        <div class="flex items-center justify-between text-sm text-gray-400">
+                            <span>📍 Aracruz - ES</span>
+                            <span>⏱️ ~1h30 de Vitória</span>
+                        </div>
+                    </div>
+
+                    <div class="glass rounded-2xl p-6 hover:scale-[1.02] transition-all duration-300 border border-pink-500/20">
+                        <div class="text-6xl text-center mb-4">⛪</div>
+                        <h3 class="text-2xl font-bold text-pink-400 mb-3 text-center">Convento da Penha</h3>
+                        <p class="text-gray-300 mb-4">
+                            Santuário no alto de um penhasco com vista panorâmica. Um dos mais importantes pontos religiosos e turísticos do ES.
+                        </p>
+                        <div class="flex items-center justify-between text-sm text-gray-400">
+                            <span>📍 Vila Velha - ES</span>
+                            <span>⏱️ ~30 min de Vitória</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 bg-gradient-to-r from-purple-900/30 to-pink-900/30 border border-purple-500/30 rounded-2xl p-6 text-center">
+                    <h4 class="text-2xl font-bold text-purple-300 mb-3">🚗 Pacotes Turísticos Personalizados</h4>
+                    <p class="text-gray-300 mb-4">
+                        Faça seu roteiro turístico com conforto e segurança. Valores especiais para passeios de dia inteiro!
+                    </p>
+                    <a href="https://wa.me/5527988668504?text=Olá!%20Gostaria%20de%20informações%20sobre%20passeios%20turísticos%20no%20Espírito%20Santo" target="_blank" class="inline-block bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-4 rounded-xl font-bold hover:from-green-700 hover:to-green-800 transition-all duration-300 shadow-lg hover:shadow-green-500/50">
+                        📱 Solicitar Orçamento de Passeio
+                    </a>
+                </div>
+            </div>
+
+            <!-- Chat Premium -->
+            <div class="glass rounded-3xl shadow-2xl overflow-hidden">
+                <div class="bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-600 text-white p-6 font-bold text-xl flex items-center gap-3">
+                    💬 Chat Premium com Motorista
+                    <span class="ml-auto text-sm bg-white/20 px-3 py-1 rounded-full">Direto no WhatsApp</span>
+                </div>
+                
+                <div id="chatMessages" class="h-96 overflow-y-auto p-6 bg-gradient-to-br from-slate-900/50 to-slate-800/50 space-y-4">
+                    <div class="p-4 rounded-2xl max-w-md glass">
+                        👨‍💼 Olá! Sou o Lucas Santos, seu motorista particular premium da Grande Vitória. Como posso ajudá-lo hoje?
+                    </div>
+                </div>
+
+                <div class="p-6 bg-slate-900/90 border-t-2 border-purple-500/20 flex gap-3">
+                    <input type="text" id="mensagemInput" placeholder="Digite sua mensagem..." class="flex-1 p-4 bg-slate-800 text-gray-200 border-2 border-slate-600 rounded-2xl focus:border-purple-500 focus:outline-none transition-all duration-300 placeholder-gray-500" onkeypress="if(event.key==='Enter') enviarMensagem()">
+                    <button onclick="enviarMensagem()" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-2xl font-bold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-purple-500/50">
                         📤 Enviar
                     </button>
                 </div>
@@ -527,28 +725,7 @@
                 url = `https://www.google.com/maps/search/${encodeURIComponent(destino)}`;
             }
             
-            // Tentar abrir de múltiplas formas para garantir funcionamento
-            try {
-                // Método 1: window.open
-                const novaAba = window.open(url, '_blank', 'noopener,noreferrer');
-                
-                // Método 2: se window.open falhar, usar link direto
-                if (!novaAba || novaAba.closed || typeof novaAba.closed === 'undefined') {
-                    // Criar link temporário e clicar
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.target = '_blank';
-                    link.rel = 'noopener noreferrer';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                }
-                
-                adicionarMensagemChat('driver', '🗺️ Abrindo rota no Google Maps...');
-            } catch (error) {
-                // Se tudo falhar, mostrar URL para copiar
-                alert('📋 Copie este link e abra no navegador:\n\n' + url);
-            }
+            window.open(url, '_blank');
         }
 
         function abrirWaze() {
@@ -571,24 +748,7 @@
                 url = `https://waze.com/ul?q=${encodeURIComponent(destino)}`;
             }
             
-            // Tentar abrir de múltiplas formas
-            try {
-                const novaAba = window.open(url, '_blank', 'noopener,noreferrer');
-                
-                if (!novaAba || novaAba.closed || typeof novaAba.closed === 'undefined') {
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.target = '_blank';
-                    link.rel = 'noopener noreferrer';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                }
-                
-                adicionarMensagemChat('driver', '🚗 Abrindo rota no Waze...');
-            } catch (error) {
-                alert('📋 Copie este link e abra no navegador:\n\n' + url);
-            }
+            window.open(url, '_blank');
         }
 
         function calcularRota() {
@@ -703,198 +863,4 @@ ${pagamentoPix === 'Sim' ? '✅ Chave PIX: 147.122.587-99' : '💵 Pagamento dir
         }
     </script>
 </body>
-</html>="obterLocalizacao()" class="w-full bg-gradient-to-r from-green-600 to-green-700 text-white p-4 rounded-xl font-bold hover:from-green-700 hover:to-green-800 transition-all duration-300 shadow-lg hover:shadow-green-500/50 hover:scale-[1.02]">
-                                🧭 Usar Minha Localização GPS
-                            </button>
-                            <div id="locationStatus" class="mt-3 hidden p-3 glass rounded-lg text-sm"></div>
-                        </div>
-
-                        <div>
-                            <label class="block font-bold text-gray-200 mb-3">
-                                🔴 Local de Destino:
-                            </label>
-                            <input type="text" id="destino" placeholder="Digite o endereço de destino" class="w-full p-4 bg-slate-800 text-gray-200 border-2 border-slate-600 rounded-xl focus:border-purple-500 focus:outline-none transition-all duration-300 mb-3 placeholder-gray-500">
-                            <button onclick="abrirMaps()" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-xl font-bold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-lg hover:scale-[1.02]">
-                                🗺️ Abrir no Google Maps
-                            </button>
-                        </div>
-                    </div>
-
-                    <button onclick="calcularRota()" class="w-full bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-600 text-white p-5 rounded-2xl font-bold text-lg hover:shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-[1.02]">
-                        💰 Calcular Valor da Corrida
-                    </button>
-
-                    <div id="resultadoPreco" class="hidden mt-6 glass border-2 border-purple-500/50 p-6 rounded-2xl shadow-2xl">
-                        <div class="bg-white/10 backdrop-blur-sm rounded-xl p-3 mb-5 text-center">
-                            <div class="text-sm text-purple-200 mb-1">Distância Calculada</div>
-                            <div class="text-3xl font-bold" id="distanciaTexto">0 km</div>
-                        </div>
-                        
-                        <div class="space-y-3 mb-5">
-                            <div class="flex justify-between items-center p-3 bg-white/5 rounded-lg">
-                                <span class="text-gray-300" id="taxaDescricao">Valor por km:</span>
-                                <span class="font-bold text-xl" id="valorKm">R$ 0,00</span>
-                            </div>
-                            <div class="flex justify-between items-center p-3 bg-white/5 rounded-lg">
-                                <span class="text-gray-300">Taxa base:</span>
-                                <span class="font-bold text-xl" id="taxaBase">R$ 10,00</span>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-gradient-to-r from-yellow-500 to-orange-500 p-5 rounded-xl text-center shadow-lg">
-                            <div class="text-sm opacity-90 mb-1">Valor Total</div>
-                            <div class="text-4xl font-black" id="valorTotal">R$ 0,00</div>
-                        </div>
-
-                        <div class="mt-6 text-center p-5 bg-gradient-to-r from-green-900/30 to-emerald-900/30 rounded-xl border border-green-500/30">
-                            <div class="text-green-400 text-2xl font-bold mb-2">
-                                ✅ Motorista Disponível
-                            </div>
-                            <p class="text-gray-300">Lucas Santos está pronto para sua corrida!</p>
-                        </div>
-                    </div>
-
-                    <!-- Seção de Pagamento PIX (OPCIONAL) -->
-                    <div id="secaoPagamento" class="hidden mt-6 glass border-2 border-blue-500/50 p-6 rounded-2xl">
-                        <h3 class="text-2xl font-bold text-center mb-4 text-transparent bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text">
-                            💳 Pagamento Antecipado (Opcional)
-                        </h3>
-                        <div class="bg-blue-900/20 border border-blue-500/30 rounded-xl p-4 mb-4">
-                            <p class="text-blue-200 text-sm text-center">
-                                ℹ️ O pagamento antecipado é <strong>opcional</strong>. Você pode pagar diretamente ao motorista ou usar PIX agora.
-                            </p>
-                        </div>
-                        <div class="bg-white/10 backdrop-blur-sm rounded-xl p-5 mb-4 text-center">
-                            <div class="text-sm text-gray-300 mb-2">Chave PIX (CPF)</div>
-                            <div class="text-2xl font-bold text-green-400 mb-3">147.122.587-99</div>
-                            <button onclick="copiarPix()" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-2 rounded-lg font-bold hover:from-purple-700 hover:to-pink-700 transition-all duration-300">
-                                📋 Copiar Chave PIX
-                            </button>
-                        </div>
-                        <div class="bg-gradient-to-r from-yellow-900/30 to-orange-900/30 border border-yellow-500/30 rounded-xl p-4 mb-4">
-                            <p class="text-yellow-200 text-sm text-center">
-                                💰 Valor: <strong id="valorPagamento">R$ 0,00</strong>
-                            </p>
-                        </div>
-                        <button onclick="confirmarPagamento()" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white p-4 rounded-xl font-bold hover:from-green-700 hover:to-emerald-700 transition-all duration-300">
-                            ✅ Já realizei o pagamento PIX
-                        </button>
-                    </div>
-
-                    <button onclick="enviarWhatsApp()" id="btnWhatsApp" class="hidden w-full mt-4 bg-gradient-to-r from-green-600 to-green-700 text-white p-5 rounded-2xl font-bold text-lg hover:from-green-700 hover:to-green-800 transition-all duration-300 shadow-lg hover:shadow-green-500/50 hover:scale-[1.02]">
-                        📱 Enviar Solicitação via WhatsApp
-                    </button>
-                </div>
-            </div>
-
-            <!-- Seção de Turismo -->
-            <div class="glass rounded-3xl shadow-2xl p-8">
-                <h2 class="text-4xl font-bold text-center text-transparent bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text mb-4">
-                    🏝️ Turismo no Espírito Santo
-                </h2>
-                <p class="text-gray-300 text-center mb-8 text-lg">
-                    Conheça os principais pontos turísticos com nosso serviço premium
-                </p>
-
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div class="glass rounded-2xl p-6 hover:scale-[1.02] transition-all duration-300 border border-purple-500/20">
-                        <div class="text-6xl text-center mb-4">🧘</div>
-                        <h3 class="text-2xl font-bold text-purple-400 mb-3 text-center">Buda de Ibiraçu</h3>
-                        <p class="text-gray-300 mb-4">
-                            Monumento budista com 35 metros de altura. Um dos maiores budas da América Latina, ideal para meditação e contemplação.
-                        </p>
-                        <div class="flex items-center justify-between text-sm text-gray-400">
-                            <span>📍 Ibiraçu - ES</span>
-                            <span>⏱️ ~45 min de Vitória</span>
-                        </div>
-                    </div>
-
-                    <div class="glass rounded-2xl p-6 hover:scale-[1.02] transition-all duration-300 border border-blue-500/20">
-                        <div class="text-6xl text-center mb-4">⛰️</div>
-                        <h3 class="text-2xl font-bold text-blue-400 mb-3 text-center">Pedra Azul</h3>
-                        <p class="text-gray-300 mb-4">
-                            Cartão postal capixaba! Formação rochosa que muda de cor durante o dia. Parque estadual com trilhas e natureza exuberante.
-                        </p>
-                        <div class="flex items-center justify-between text-sm text-gray-400">
-                            <span>📍 Domingos Martins</span>
-                            <span>⏱️ ~2h de Vitória</span>
-                        </div>
-                    </div>
-
-                    <div class="glass rounded-2xl p-6 hover:scale-[1.02] transition-all duration-300 border border-cyan-500/20">
-                        <div class="text-6xl text-center mb-4">🏊</div>
-                        <h3 class="text-2xl font-bold text-cyan-400 mb-3 text-center">Piscinas Naturais - Pedra Azul</h3>
-                        <p class="text-gray-300 mb-4">
-                            Trilhas que levam às piscinas naturais de água cristalina. Experiência única de conexão com a natureza e banhos refrescantes.
-                        </p>
-                        <div class="flex items-center justify-between text-sm text-gray-400">
-                            <span>📍 Domingos Martins</span>
-                            <span>⏱️ ~2h de Vitória</span>
-                        </div>
-                    </div>
-
-                    <div class="glass rounded-2xl p-6 hover:scale-[1.02] transition-all duration-300 border border-yellow-500/20">
-                        <div class="text-6xl text-center mb-4">🏖️</div>
-                        <h3 class="text-2xl font-bold text-yellow-400 mb-3 text-center">Guarapari</h3>
-                        <p class="text-gray-300 mb-4">
-                            Praias paradisíacas com areias monazíticas. Conhecida como a "Capital da Saúde" com mais de 50 praias para você explorar.
-                        </p>
-                        <div class="flex items-center justify-between text-sm text-gray-400">
-                            <span>📍 Guarapari - ES</span>
-                            <span>⏱️ ~1h de Vitória</span>
-                        </div>
-                    </div>
-
-                    <div class="glass rounded-2xl p-6 hover:scale-[1.02] transition-all duration-300 border border-green-500/20">
-                        <div class="text-6xl text-center mb-4">🌴</div>
-                        <h3 class="text-2xl font-bold text-green-400 mb-3 text-center">Coqueiral de Aracruz</h3>
-                        <p class="text-gray-300 mb-4">
-                            Extensa faixa de coqueiros à beira-mar. Perfeito para relaxar, caminhar e apreciar o pôr do sol tropical capixaba.
-                        </p>
-                        <div class="flex items-center justify-between text-sm text-gray-400">
-                            <span>📍 Aracruz - ES</span>
-                            <span>⏱️ ~1h30 de Vitória</span>
-                        </div>
-                    </div>
-
-                    <div class="glass rounded-2xl p-6 hover:scale-[1.02] transition-all duration-300 border border-pink-500/20">
-                        <div class="text-6xl text-center mb-4">⛪</div>
-                        <h3 class="text-2xl font-bold text-pink-400 mb-3 text-center">Convento da Penha</h3>
-                        <p class="text-gray-300 mb-4">
-                            Santuário no alto de um penhasco com vista panorâmica. Um dos mais importantes pontos religiosos e turísticos do ES.
-                        </p>
-                        <div class="flex items-center justify-between text-sm text-gray-400">
-                            <span>📍 Vila Velha - ES</span>
-                            <span>⏱️ ~30 min de Vitória</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-8 bg-gradient-to-r from-purple-900/30 to-pink-900/30 border border-purple-500/30 rounded-2xl p-6 text-center">
-                    <h4 class="text-2xl font-bold text-purple-300 mb-3">🚗 Pacotes Turísticos Personalizados</h4>
-                    <p class="text-gray-300 mb-4">
-                        Faça seu roteiro turístico com conforto e segurança. Valores especiais para passeios de dia inteiro!
-                    </p>
-                    <a href="https://wa.me/5527988668504?text=Olá!%20Gostaria%20de%20informações%20sobre%20passeios%20turísticos%20no%20Espírito%20Santo" target="_blank" class="inline-block bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-4 rounded-xl font-bold hover:from-green-700 hover:to-green-800 transition-all duration-300 shadow-lg hover:shadow-green-500/50">
-                        📱 Solicitar Orçamento de Passeio
-                    </a>
-                </div>
-            </div>
-
-            <!-- Chat Premium -->
-            <div class="glass rounded-3xl shadow-2xl overflow-hidden">
-                <div class="bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-600 text-white p-6 font-bold text-xl flex items-center gap-3">
-                    💬 Chat Premium com Motorista
-                    <span class="ml-auto text-sm bg-white/20 px-3 py-1 rounded-full">Direto no WhatsApp</span>
-                </div>
-                
-                <div id="chatMessages" class="h-96 overflow-y-auto p-6 bg-gradient-to-br from-slate-900/50 to-slate-800/50 space-y-4">
-                    <div class="p-4 rounded-2xl max-w-md glass">
-                        👨‍💼 Olá! Sou o Lucas Santos, seu motorista particular premium da Grande Vitória. Como posso ajudá-lo hoje?
-                    </div>
-                </div>
-
-                <div class="p-6 bg-slate-900/90 border-t-2 border-purple-500/20 flex gap-3">
-                    <input type="text" id="mensagemInput" placeholder="Digite sua mensagem..." class="flex-1 p-4 bg-slate-800 text-gray-200 border-2 border-slate-600 rounded-2xl focus:border-purple-500 focus:outline-none transition-all duration-300 placeholder-gray-500" onkeypress="if(event.key==='Enter') enviarMensagem()">
-                    <button onclick
-
+</html>
