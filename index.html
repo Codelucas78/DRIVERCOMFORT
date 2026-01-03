@@ -13,15 +13,15 @@
         }
 
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             min-height: 100vh;
             font-family: 'Segoe UI', system-ui, sans-serif;
         }
 
         .glass {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(15, 23, 42, 0.85);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         .animate-float {
@@ -83,96 +83,239 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
         }
+
+        #identificacaoModal, #turismoModal {
+            display: flex;
+        }
+
+        .modal-overlay {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
     </style>
 </head>
 <body class="p-4 md:p-8">
-    <div class="max-w-6xl mx-auto space-y-8">
+    
+    <!-- Modal de Identificação (Aparece primeiro) -->
+    <div id="identificacaoModal" class="fixed inset-0 bg-black/95 backdrop-blur-md flex items-center justify-center z-50 p-4 modal-overlay">
+        <div class="glass p-8 rounded-3xl max-w-md w-full border-2 border-purple-500/50 shadow-2xl">
+            <div class="text-center mb-6">
+                <div class="text-6xl mb-4">🚗</div>
+                <h2 class="text-3xl font-bold text-white mb-2">Bem-vindo!</h2>
+                <p class="text-gray-300">Por favor, identifique-se para continuar</p>
+            </div>
+
+            <div class="space-y-4">
+                <input 
+                    type="text" 
+                    id="nomeIdentificacao" 
+                    placeholder="Nome completo"
+                    class="w-full px-4 py-4 bg-slate-800/80 border-2 border-purple-500/30 text-white placeholder-gray-400 rounded-xl focus:border-purple-500 focus:outline-none transition-all"
+                >
+                <input 
+                    type="text" 
+                    id="cpfIdentificacao" 
+                    placeholder="CPF"
+                    maxlength="14"
+                    class="w-full px-4 py-4 bg-slate-800/80 border-2 border-purple-500/30 text-white placeholder-gray-400 rounded-xl focus:border-purple-500 focus:outline-none transition-all"
+                >
+                <input 
+                    type="text" 
+                    id="telefoneIdentificacao" 
+                    placeholder="Telefone (com DDD)"
+                    maxlength="15"
+                    class="w-full px-4 py-4 bg-slate-800/80 border-2 border-purple-500/30 text-white placeholder-gray-400 rounded-xl focus:border-purple-500 focus:outline-none transition-all"
+                >
+                <button 
+                    onclick="entrarNoSite()" 
+                    class="w-full px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-lg font-bold rounded-xl transition-all duration-300 shadow-lg pulse-glow"
+                >
+                    ✅ Entrar no Site
+                </button>
+            </div>
+
+            <p class="text-xs text-gray-400 text-center mt-4">
+                🔒 Seus dados são seguros e usados apenas para registro de visita
+            </p>
+        </div>
+    </div>
+
+    <!-- Modal de Turismo -->
+    <div id="turismoModal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div class="glass p-8 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border-2 border-cyan-500/50">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold text-white">🏖️ Pacotes de Turismo</h2>
+                <button onclick="toggleTurismo()" class="text-white text-3xl hover:text-red-400 transition-colors">
+                    ✖️
+                </button>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Pacote 1 -->
+                <div class="glass p-6 rounded-2xl border-2 border-cyan-500/30 hover:border-cyan-500/60 transition-all">
+                    <div class="text-4xl mb-3">🏖️</div>
+                    <h3 class="text-2xl font-bold text-cyan-400 mb-3">Praias da Grande Vitória</h3>
+                    <p class="text-gray-300 mb-4">Conheça as melhores praias: Camburi, Curva da Jurema, Praia da Costa e muito mais!</p>
+                    <div class="space-y-2 mb-4">
+                        <p class="text-white">⏱️ Duração: 4-6 horas</p>
+                        <p class="text-white">👥 Até 4 pessoas</p>
+                        <p class="text-green-400 font-bold text-xl">💰 R$ 250,00</p>
+                    </div>
+                    <button onclick="solicitarTurismo('Praias da Grande Vitória', 250)" class="w-full px-4 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white rounded-xl font-semibold transition-all">
+                        📱 Solicitar via WhatsApp
+                    </button>
+                </div>
+
+                <!-- Pacote 2 -->
+                <div class="glass p-6 rounded-2xl border-2 border-green-500/30 hover:border-green-500/60 transition-all">
+                    <div class="text-4xl mb-3">🏔️</div>
+                    <h3 class="text-2xl font-bold text-green-400 mb-3">Serra Capixaba</h3>
+                    <p class="text-gray-300 mb-4">Explore Domingos Martins, Venda Nova e a beleza das montanhas!</p>
+                    <div class="space-y-2 mb-4">
+                        <p class="text-white">⏱️ Duração: 8-10 horas</p>
+                        <p class="text-white">👥 Até 4 pessoas</p>
+                        <p class="text-green-400 font-bold text-xl">💰 R$ 450,00</p>
+                    </div>
+                    <button onclick="solicitarTurismo('Serra Capixaba', 450)" class="w-full px-4 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl font-semibold transition-all">
+                        📱 Solicitar via WhatsApp
+                    </button>
+                </div>
+
+                <!-- Pacote 3 -->
+                <div class="glass p-6 rounded-2xl border-2 border-orange-500/30 hover:border-orange-500/60 transition-all">
+                    <div class="text-4xl mb-3">🐢</div>
+                    <h3 class="text-2xl font-bold text-orange-400 mb-3">Guarapari e Anchieta</h3>
+                    <p class="text-gray-300 mb-4">Praias paradisíacas, areia monazítica e pontos turísticos incríveis!</p>
+                    <div class="space-y-2 mb-4">
+                        <p class="text-white">⏱️ Duração: 6-8 horas</p>
+                        <p class="text-white">👥 Até 4 pessoas</p>
+                        <p class="text-green-400 font-bold text-xl">💰 R$ 350,00</p>
+                    </div>
+                    <button onclick="solicitarTurismo('Guarapari e Anchieta', 350)" class="w-full px-4 py-3 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white rounded-xl font-semibold transition-all">
+                        📱 Solicitar via WhatsApp
+                    </button>
+                </div>
+
+                <!-- Pacote 4 -->
+                <div class="glass p-6 rounded-2xl border-2 border-purple-500/30 hover:border-purple-500/60 transition-all">
+                    <div class="text-4xl mb-3">🎨</div>
+                    <h3 class="text-2xl font-bold text-purple-400 mb-3">City Tour Vitória</h3>
+                    <p class="text-gray-300 mb-4">Conheça o centro histórico, Convento da Penha, Palácio Anchieta e mais!</p>
+                    <div class="space-y-2 mb-4">
+                        <p class="text-white">⏱️ Duração: 3-4 horas</p>
+                        <p class="text-white">👥 Até 4 pessoas</p>
+                        <p class="text-green-400 font-bold text-xl">💰 R$ 200,00</p>
+                    </div>
+                    <button onclick="solicitarTurismo('City Tour Vitória', 200)" class="w-full px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl font-semibold transition-all">
+                        📱 Solicitar via WhatsApp
+                    </button>
+                </div>
+            </div>
+
+            <div class="mt-6 p-4 bg-blue-900/30 border border-blue-500/30 rounded-xl">
+                <p class="text-blue-200 text-center">
+                    ℹ️ <strong>Todos os pacotes incluem:</strong> Motorista profissional, veículo confortável e ar-condicionado. Alimentação e ingressos não inclusos.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="conteudoPrincipal" class="hidden max-w-6xl mx-auto space-y-8">
         
         <!-- Header Premium -->
-        <div class="glass rounded-3xl p-8 shadow-2xl animate-float">
+        <div class="glass rounded-3xl p-8 shadow-2xl animate-float border border-purple-500/30">
             <div class="flex flex-col md:flex-row items-center gap-6">
                 <div class="relative">
                     <div class="w-32 h-32 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 p-1 pulse-glow">
-                        <div class="w-full h-full rounded-full bg-gray-800 flex items-center justify-center overflow-hidden">
+                        <div class="w-full h-full rounded-full bg-slate-900 flex items-center justify-center overflow-hidden">
                             <img id="fotoMotorista" src="" alt="Foto" class="w-full h-full object-cover hidden">
                             <span id="avatarPadrao" class="text-5xl">👨‍💼</span>
                         </div>
                     </div>
-                    <div class="absolute -bottom-2 -right-2 bg-green-500 w-8 h-8 rounded-full border-4 border-gray-900 flex items-center justify-center">
+                    <div class="absolute -bottom-2 -right-2 bg-green-500 w-8 h-8 rounded-full border-4 border-slate-900 flex items-center justify-center">
                         <span class="text-xs">✓</span>
                     </div>
                 </div>
                 
                 <div class="flex-1 text-center md:text-left">
                     <h1 class="text-4xl font-bold text-white mb-2">Lucas Santos</h1>
-                    <p class="text-xl text-purple-200 mb-3">🚗 Motorista Premium Profissional</p>
+                    <p class="text-xl text-purple-300 mb-3">🚗 Motorista Premium Profissional</p>
                     <div class="flex flex-wrap justify-center md:justify-start gap-3">
-                        <span class="px-4 py-2 bg-purple-600/50 rounded-full text-sm text-white font-semibold">
+                        <span class="px-4 py-2 bg-purple-700/60 rounded-full text-sm text-white font-semibold border border-purple-500/50">
                             <span class="star">⭐⭐⭐⭐⭐</span> 5.0
                         </span>
-                        <span class="px-4 py-2 bg-pink-600/50 rounded-full text-sm text-white font-semibold">
+                        <span class="px-4 py-2 bg-pink-700/60 rounded-full text-sm text-white font-semibold border border-pink-500/50">
                             🏆 1.247 Corridas
                         </span>
-                        <span class="px-4 py-2 bg-blue-600/50 rounded-full text-sm text-white font-semibold">
+                        <span class="px-4 py-2 bg-blue-700/60 rounded-full text-sm text-white font-semibold border border-blue-500/50">
                             ✅ Verificado
                         </span>
                     </div>
                 </div>
 
-                <button onclick="toggleAdmin()" class="px-6 py-3 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white rounded-xl font-bold transition-all duration-300 shadow-lg">
-                    ⚙️ Admin
-                </button>
+                <div class="flex gap-3">
+                    <button onclick="toggleTurismo()" class="px-6 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white rounded-xl font-bold transition-all duration-300 shadow-lg border border-cyan-500/50">
+                        🏖️ Turismo
+                    </button>
+                    <button onclick="toggleAdmin()" class="px-6 py-3 bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700 text-white rounded-xl font-bold transition-all duration-300 shadow-lg border border-yellow-500/50">
+                        ⚙️ Admin
+                    </button>
+                </div>
             </div>
         </div>
 
         <!-- Formulário de Viagem -->
         <div class="grid md:grid-cols-2 gap-6">
             <div class="space-y-6">
-                <div class="glass p-6 rounded-2xl">
+                <div class="glass p-6 rounded-2xl border border-purple-500/30">
                     <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
                         🗺️ Planejar Viagem
                     </h2>
 
-                    <div class="glass p-6 rounded-2xl mb-4">
+                    <div class="glass p-6 rounded-2xl mb-4 border border-purple-500/20">
                         <label class="block text-gray-200 font-semibold mb-3">📍 De onde você está?</label>
                         <div class="relative">
                             <input 
                                 type="text" 
                                 id="origem" 
                                 placeholder="Digite o endereço de origem..."
-                                class="w-full px-4 py-4 rounded-xl bg-white/10 border-2 border-purple-400/30 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-all"
+                                class="w-full px-4 py-4 rounded-xl bg-slate-800/80 border-2 border-purple-500/30 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-all"
                                 autocomplete="off"
                                 oninput="buscarSugestoesOrigem(this.value)"
                             >
-                            <div id="sugestoesOrigem" class="absolute w-full mt-2 glass rounded-xl overflow-hidden shadow-2xl z-50 hidden max-h-80 overflow-y-auto"></div>
+                            <div id="sugestoesOrigem" class="absolute w-full mt-2 glass rounded-xl overflow-hidden shadow-2xl z-50 hidden max-h-80 overflow-y-auto border border-purple-500/30"></div>
                         </div>
                         <button 
                             onclick="obterLocalizacao()" 
-                            class="mt-3 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-cyan-500/50 w-full"
+                            class="mt-3 px-6 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white rounded-xl font-semibold transition-all duration-300 shadow-lg w-full border border-cyan-500/50"
                         >
                             📍 Usar Minha Localização Atual
                         </button>
                         <div id="locationStatus" class="hidden"></div>
                     </div>
 
-                    <div class="glass p-6 rounded-2xl mb-4">
+                    <div class="glass p-6 rounded-2xl mb-4 border border-pink-500/20">
                         <label class="block text-gray-200 font-semibold mb-3">🎯 Para onde você vai?</label>
                         <div class="relative">
                             <input 
                                 type="text" 
                                 id="destino" 
                                 placeholder="Ex: Jardim Camburi, Vitória - ES"
-                                class="w-full px-4 py-4 rounded-xl bg-white/10 border-2 border-pink-400/30 text-white placeholder-gray-400 focus:border-pink-500 focus:outline-none transition-all"
+                                class="w-full px-4 py-4 rounded-xl bg-slate-800/80 border-2 border-pink-500/30 text-white placeholder-gray-400 focus:border-pink-500 focus:outline-none transition-all"
                                 autocomplete="off"
                                 oninput="buscarSugestoesDestino(this.value)"
                             >
-                            <div id="sugestoesDestino" class="absolute w-full mt-2 glass rounded-xl overflow-hidden shadow-2xl z-50 hidden max-h-80 overflow-y-auto"></div>
+                            <div id="sugestoesDestino" class="absolute w-full mt-2 glass rounded-xl overflow-hidden shadow-2xl z-50 hidden max-h-80 overflow-y-auto border border-pink-500/30"></div>
                         </div>
                     </div>
 
                     <button 
                         onclick="calcularRota()" 
-                        class="w-full px-8 py-5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-xl font-bold rounded-2xl transition-all duration-300 shadow-2xl hover:shadow-purple-500/50 pulse-glow"
+                        class="w-full px-8 py-5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-xl font-bold rounded-2xl transition-all duration-300 shadow-2xl pulse-glow border border-purple-500/50"
                     >
                         💎 Calcular Valor da Viagem
                     </button>
@@ -180,53 +323,53 @@
                     <div class="flex gap-3 mt-4">
                         <button 
                             onclick="abrirGoogleMaps()" 
-                            class="flex-1 px-4 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl font-semibold transition-all duration-300 shadow-lg"
+                            class="flex-1 px-4 py-3 bg-gradient-to-r from-green-700 to-emerald-700 hover:from-green-800 hover:to-emerald-800 text-white rounded-xl font-semibold transition-all duration-300 shadow-lg border border-green-500/50"
                         >
                             🗺️ Google Maps
                         </button>
                         <button 
                             onclick="abrirWaze()" 
-                            class="flex-1 px-4 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-xl font-semibold transition-all duration-300 shadow-lg"
+                            class="flex-1 px-4 py-3 bg-gradient-to-r from-blue-700 to-cyan-700 hover:from-blue-800 hover:to-cyan-800 text-white rounded-xl font-semibold transition-all duration-300 shadow-lg border border-blue-500/50"
                         >
                             🚗 Waze
                         </button>
                     </div>
                 </div>
 
-                <div id="resultadoPreco" class="hidden glass p-6 rounded-2xl space-y-4">
+                <div id="resultadoPreco" class="hidden glass p-6 rounded-2xl space-y-4 border border-purple-500/30">
                     <h3 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
                         💎 Detalhes da Viagem
                     </h3>
                     
                     <div class="space-y-3">
-                        <div class="flex justify-between items-center p-4 bg-white/5 rounded-xl">
-                            <span class="text-gray-300">📏 Distância:</span>
+                        <div class="flex justify-between items-center p-4 bg-slate-800/60 rounded-xl border border-purple-500/20">
+                            <span class="text-gray-200 font-semibold">📏 Distância:</span>
                             <span id="distanciaTexto" class="text-xl font-bold text-white loading-pulse">Calculando...</span>
                         </div>
                         
-                        <div class="flex justify-between items-center p-4 bg-white/5 rounded-xl">
-                            <span id="taxaDescricao" class="text-gray-300">💰 Valor por km:</span>
+                        <div class="flex justify-between items-center p-4 bg-slate-800/60 rounded-xl border border-purple-500/20">
+                            <span id="taxaDescricao" class="text-gray-200 font-semibold">💰 Valor por km:</span>
                             <span id="valorKm" class="text-xl font-bold text-white">R$ --</span>
                         </div>
                         
-                        <div class="flex justify-between items-center p-6 bg-gradient-to-r from-purple-600/30 to-pink-600/30 rounded-xl border-2 border-purple-400/50">
+                        <div class="flex justify-between items-center p-6 bg-gradient-to-r from-purple-700/40 to-pink-700/40 rounded-xl border-2 border-purple-500/50">
                             <span class="text-xl font-bold text-white">💳 Valor Total:</span>
-                            <span id="valorTotal" class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400">R$ --</span>
+                            <span id="valorTotal" class="text-3xl font-bold text-green-400">R$ --</span>
                         </div>
                     </div>
 
-                    <div class="bg-gradient-to-r from-blue-600/20 to-cyan-600/20 border border-blue-400/30 rounded-xl p-4 mt-4">
+                    <div class="bg-blue-900/40 border border-blue-500/30 rounded-xl p-4 mt-4">
                         <p class="text-sm text-blue-200">
                             ℹ️ <strong>Informação:</strong> Valores dentro do Espírito Santo: R$ 3,00/km. Viagens para outros estados: R$ 4,00/km. Pagamento direto ao motorista ou PIX.
                         </p>
                     </div>
                 </div>
 
-                <div id="secaoPagamento" class="hidden glass p-6 rounded-2xl space-y-4">
+                <div id="secaoPagamento" class="hidden glass p-6 rounded-2xl space-y-4 border border-green-500/30">
                     <h3 class="text-2xl font-bold text-white mb-4">💳 Opção de Pagamento PIX</h3>
                     
-                    <div class="bg-gradient-to-r from-green-600/20 to-emerald-600/20 border border-green-400/30 rounded-xl p-5">
-                        <p class="text-green-200 mb-3">
+                    <div class="bg-green-900/40 border border-green-500/30 rounded-xl p-5">
+                        <p class="text-green-200 mb-3 font-semibold">
                             <strong>Chave PIX (CPF):</strong>
                         </p>
                         <div class="flex gap-2">
@@ -234,23 +377,23 @@
                                 type="text" 
                                 value="147.122.587-99" 
                                 readonly 
-                                class="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white font-mono text-lg"
+                                class="flex-1 px-4 py-3 bg-slate-800/80 border border-green-500/30 rounded-lg text-white font-mono text-lg"
                             >
                             <button 
                                 onclick="copiarPix()" 
-                                class="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white rounded-lg font-semibold transition-all"
+                                class="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-lg font-semibold transition-all border border-green-500/50"
                             >
                                 📋 Copiar
                             </button>
                         </div>
-                        <p class="text-sm text-gray-300 mt-3">
+                        <p class="text-sm text-gray-200 mt-3 font-semibold">
                             💰 Valor: <span id="valorPagamento" class="font-bold text-green-400">R$ --</span>
                         </p>
                     </div>
 
                     <button 
                         onclick="confirmarPagamento()" 
-                        class="w-full px-6 py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white text-lg font-bold rounded-xl transition-all shadow-lg"
+                        class="w-full px-6 py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white text-lg font-bold rounded-xl transition-all shadow-lg border border-green-500/50"
                     >
                         ✅ Confirmar Pagamento PIX
                     </button>
@@ -259,7 +402,7 @@
                 <button 
                     id="btnWhatsApp"
                     onclick="enviarWhatsApp()" 
-                    class="hidden w-full px-8 py-5 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white text-xl font-bold rounded-2xl transition-all duration-300 shadow-2xl hover:shadow-green-500/50"
+                    class="hidden w-full px-8 py-5 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white text-xl font-bold rounded-2xl transition-all duration-300 shadow-2xl border border-green-500/50"
                 >
                     📱 Solicitar Corrida via WhatsApp
                 </button>
@@ -267,11 +410,11 @@
 
             <!-- Chat e Estatísticas -->
             <div class="space-y-6">
-                <div class="glass p-6 rounded-2xl">
+                <div class="glass p-6 rounded-2xl border border-purple-500/30">
                     <h3 class="text-2xl font-bold text-white mb-4">💬 Chat ao Vivo</h3>
                     <div id="chatMessages" class="space-y-3 mb-4">
-                        <div class="p-4 rounded-2xl max-w-md glass">
-                            👨‍💼 Olá! Sou o Lucas Santos, seu motorista premium. Como posso ajudar?
+                        <div class="p-4 rounded-2xl max-w-md glass border border-purple-500/20">
+                            <span class="text-white">👨‍💼 Olá! Sou o Lucas Santos, seu motorista premium. Como posso ajudar?</span>
                         </div>
                     </div>
                     <div class="flex gap-2">
@@ -279,38 +422,38 @@
                             type="text" 
                             id="mensagemInput" 
                             placeholder="Digite sua mensagem..."
-                            class="flex-1 px-4 py-3 rounded-xl bg-white/10 border-2 border-purple-400/30 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none"
+                            class="flex-1 px-4 py-3 rounded-xl bg-slate-800/80 border-2 border-purple-500/30 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none"
                             onkeypress="if(event.key === 'Enter') enviarMensagem()"
                         >
                         <button 
                             onclick="enviarMensagem()" 
-                            class="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl font-semibold transition-all"
+                            class="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl font-semibold transition-all border border-purple-500/50"
                         >
                             📤
                         </button>
                     </div>
                 </div>
 
-                <div class="glass p-6 rounded-2xl">
+                <div class="glass p-6 rounded-2xl border border-purple-500/30">
                     <h3 class="text-2xl font-bold text-white mb-4">📊 Estatísticas de Hoje</h3>
                     <div class="grid grid-cols-2 gap-4 mb-6">
-                        <div class="glass p-4 rounded-xl text-center">
+                        <div class="glass p-4 rounded-xl text-center border border-purple-500/20">
                             <div class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
                                 <span id="visitantesHoje">0</span>
                             </div>
-                            <div class="text-sm text-gray-300 mt-1">👥 Visitantes Hoje</div>
+                            <div class="text-sm text-gray-200 mt-1 font-semibold">👥 Visitantes Hoje</div>
                         </div>
-                        <div class="glass p-4 rounded-xl text-center">
+                        <div class="glass p-4 rounded-xl text-center border border-green-500/20">
                             <div class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400">
                                 1.247
                             </div>
-                            <div class="text-sm text-gray-300 mt-1">🚗 Total de Corridas</div>
+                            <div class="text-sm text-gray-200 mt-1 font-semibold">🚗 Total de Corridas</div>
                         </div>
                     </div>
 
                     <h4 class="text-lg font-semibold text-white mb-3">🕒 Últimos Visitantes</h4>
                     <div id="listaVisitantes" class="space-y-2 max-h-64 overflow-y-auto">
-                        <div class="text-gray-400 text-center p-4">Nenhum visitante ainda</div>
+                        <div class="text-gray-300 text-center p-4">Nenhum visitante ainda</div>
                     </div>
                 </div>
             </div>
@@ -319,8 +462,8 @@
     </div>
 
     <!-- Modal Admin -->
-    <div id="adminModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div class="glass p-8 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    <div id="adminModal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div class="glass p-8 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border-2 border-yellow-500/50">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-3xl font-bold text-white">⚙️ Painel Administrativo</h2>
                 <button onclick="toggleAdmin()" class="text-white text-3xl hover:text-red-400 transition-colors">
@@ -329,46 +472,46 @@
             </div>
 
             <div class="space-y-6">
-                <div class="glass p-6 rounded-2xl">
+                <div class="glass p-6 rounded-2xl border border-purple-500/30">
                     <h3 class="text-xl font-bold text-white mb-4">📸 Atualizar Foto do Perfil</h3>
                     <input 
                         type="file" 
                         id="uploadFoto" 
                         accept="image/*" 
-                        class="w-full px-4 py-3 bg-white/10 border-2 border-purple-400/30 text-white rounded-xl file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-purple-600 file:text-white hover:file:bg-purple-700"
+                        class="w-full px-4 py-3 bg-slate-800/80 border-2 border-purple-500/30 text-white rounded-xl file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-purple-600 file:text-white hover:file:bg-purple-700"
                     >
                     <button 
                         onclick="atualizarFoto()" 
-                        class="mt-4 w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl font-semibold transition-all"
+                        class="mt-4 w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl font-semibold transition-all border border-purple-500/50"
                     >
                         ✅ Atualizar Foto
                     </button>
                 </div>
 
-                <div class="glass p-6 rounded-2xl">
+                <div class="glass p-6 rounded-2xl border border-green-500/30">
                     <h3 class="text-xl font-bold text-white mb-4">📝 Registrar Novo Visitante</h3>
                     <div class="space-y-3">
                         <input 
                             type="text" 
                             id="nomeVisitante" 
                             placeholder="Nome completo"
-                            class="w-full px-4 py-3 bg-white/10 border-2 border-purple-400/30 text-white placeholder-gray-400 rounded-xl focus:border-purple-500 focus:outline-none"
+                            class="w-full px-4 py-3 bg-slate-800/80 border-2 border-purple-500/30 text-white placeholder-gray-400 rounded-xl focus:border-purple-500 focus:outline-none"
                         >
                         <input 
                             type="text" 
                             id="cpfVisitante" 
                             placeholder="CPF"
-                            class="w-full px-4 py-3 bg-white/10 border-2 border-purple-400/30 text-white placeholder-gray-400 rounded-xl focus:border-purple-500 focus:outline-none"
+                            class="w-full px-4 py-3 bg-slate-800/80 border-2 border-purple-500/30 text-white placeholder-gray-400 rounded-xl focus:border-purple-500 focus:outline-none"
                         >
                         <input 
                             type="text" 
                             id="telefoneVisitante" 
                             placeholder="Telefone"
-                            class="w-full px-4 py-3 bg-white/10 border-2 border-purple-400/30 text-white placeholder-gray-400 rounded-xl focus:border-purple-500 focus:outline-none"
+                            class="w-full px-4 py-3 bg-slate-800/80 border-2 border-purple-500/30 text-white placeholder-gray-400 rounded-xl focus:border-purple-500 focus:outline-none"
                         >
                         <button 
                             onclick="registrarVisitante()" 
-                            class="w-full px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl font-semibold transition-all"
+                            class="w-full px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl font-semibold transition-all border border-green-500/50"
                         >
                             ✅ Registrar Visitante
                         </button>
@@ -388,13 +531,63 @@
         let timeoutSugestaoOrigem = null;
         let timeoutSugestaoDestino = null;
 
-        // Carregar dados ao iniciar
-        window.onload = function() {
+        function entrarNoSite() {
+            const nome = document.getElementById('nomeIdentificacao').value.trim();
+            const cpf = document.getElementById('cpfIdentificacao').value.trim();
+            const telefone = document.getElementById('telefoneIdentificacao').value.trim();
+
+            if (!nome || !cpf || !telefone) {
+                alert('⚠️ Por favor, preencha todos os campos!');
+                return;
+            }
+
+            if (cpf.length < 11) {
+                alert('⚠️ CPF inválido! Digite um CPF válido.');
+                return;
+            }
+
+            if (telefone.length < 10) {
+                alert('⚠️ Telefone inválido! Digite um telefone válido com DDD.');
+                return;
+            }
+
+            const visitantes = JSON.parse(localStorage.getItem('visitantes') || '[]');
+            const novoVisitante = {
+                nome,
+                cpf,
+                telefone,
+                data: new Date().toLocaleString('pt-BR')
+            };
+
+            visitantes.push(novoVisitante);
+            localStorage.setItem('visitantes', JSON.stringify(visitantes));
+
+            document.getElementById('identificacaoModal').classList.add('hidden');
+            document.getElementById('conteudoPrincipal').classList.remove('hidden');
+
             carregarDados();
-        };
+        }
+
+        function toggleTurismo() {
+            document.getElementById('turismoModal').classList.toggle('hidden');
+        }
+
+        function solicitarTurismo(pacote, valor) {
+            const mensagem = `🏖️ *Solicitação de Pacote Turístico*
+
+📦 *Pacote:* ${pacote}
+💰 *Valor:* R$ ${valor},00
+👤 *Motorista:* Lucas Santos
+
+---
+🌟 Serviço Premium de Turismo
+⭐⭐⭐⭐⭐ Avaliação 5 Estrelas`;
+
+            const url = `https://wa.me/5527988668504?text=${encodeURIComponent(mensagem)}`;
+            window.open(url, '_blank');
+        }
 
         function carregarDados() {
-            // Carregar foto
             const fotoSalva = localStorage.getItem('fotoMotorista');
             if (fotoSalva) {
                 document.getElementById('fotoMotorista').src = fotoSalva;
@@ -402,7 +595,6 @@
                 document.getElementById('avatarPadrao').classList.add('hidden');
             }
 
-            // Carregar visitantes
             const visitantes = JSON.parse(localStorage.getItem('visitantes') || '[]');
             const hoje = new Date().toLocaleDateString('pt-BR');
             const visitantesHoje = visitantes.filter(v => v.data.startsWith(hoje)).length;
@@ -414,17 +606,17 @@
             
             visitantes.slice().reverse().slice(0, 10).forEach(v => {
                 const div = document.createElement('div');
-                div.className = 'glass p-3 rounded-lg';
+                div.className = 'glass p-3 rounded-lg border border-purple-500/20';
                 div.innerHTML = `
-                    <div class="font-semibold text-gray-200">${v.nome}</div>
-                    <div class="text-sm text-gray-400">CPF: ${v.cpf} | Tel: ${v.telefone}</div>
-                    <div class="text-xs text-gray-500">Acesso: ${v.data}</div>
+                    <div class="font-semibold text-white">${v.nome}</div>
+                    <div class="text-sm text-gray-300">CPF: ${v.cpf} | Tel: ${v.telefone}</div>
+                    <div class="text-xs text-gray-400">Acesso: ${v.data}</div>
                 `;
                 lista.appendChild(div);
             });
 
             if (visitantes.length === 0) {
-                lista.innerHTML = '<div class="text-gray-400 text-center p-4">Nenhum visitante ainda</div>';
+                lista.innerHTML = '<div class="text-gray-300 text-center p-4">Nenhum visitante ainda</div>';
             }
         }
 
@@ -487,11 +679,11 @@
             const status = document.getElementById('locationStatus');
             const origemInput = document.getElementById('origem');
             status.classList.remove('hidden');
-            status.className = 'mt-3 p-3 glass rounded-lg text-sm text-cyan-300';
+            status.className = 'mt-3 p-3 glass rounded-lg text-sm text-cyan-300 border border-cyan-500/30';
             status.textContent = '🔄 Obtendo sua localização...';
             
             if (!navigator.geolocation) {
-                status.className = 'mt-3 p-3 glass rounded-lg text-sm text-red-300';
+                status.className = 'mt-3 p-3 glass rounded-lg text-sm text-red-300 border border-red-500/30';
                 status.textContent = '❌ Geolocalização não suportada pelo navegador';
                 return;
             }
@@ -521,18 +713,18 @@
                         }
                         
                         origemInput.value = enderecoFormatado;
-                        status.className = 'mt-3 p-3 glass rounded-lg text-sm text-green-300';
+                        status.className = 'mt-3 p-3 glass rounded-lg text-sm text-green-300 border border-green-500/30';
                         status.textContent = '✅ Localização obtida: ' + enderecoFormatado;
                         setTimeout(() => status.classList.add('hidden'), 5000);
                     } catch (error) {
                         origemInput.value = `${latOrigem.toFixed(6)}, ${lngOrigem.toFixed(6)}`;
-                        status.className = 'mt-3 p-3 glass rounded-lg text-sm text-yellow-300';
+                        status.className = 'mt-3 p-3 glass rounded-lg text-sm text-yellow-300 border border-yellow-500/30';
                         status.textContent = '⚠️ Localização obtida (coordenadas)';
                         setTimeout(() => status.classList.add('hidden'), 3000);
                     }
                 },
                 (error) => {
-                    status.className = 'mt-3 p-3 glass rounded-lg text-sm text-red-300';
+                    status.className = 'mt-3 p-3 glass rounded-lg text-sm text-red-300 border border-red-500/30';
                     status.textContent = '❌ Erro ao obter localização. Ative a permissão no navegador.';
                 }
             );
@@ -738,8 +930,8 @@ ${pagamentoPix === 'Sim' ? '✅ Chave PIX: 147.122.587-99' : '💵 Pagamento dir
             const div = document.createElement('div');
             div.className = tipo === 'user' 
                 ? 'p-4 rounded-2xl max-w-md bg-gradient-to-r from-purple-600 to-pink-600 text-white ml-auto text-right border border-purple-400/30 shadow-lg' 
-                : 'p-4 rounded-2xl max-w-md glass';
-            div.textContent = (tipo === 'user' ? '👤 ' : '👨‍💼 ') + texto;
+                : 'p-4 rounded-2xl max-w-md glass border border-purple-500/20';
+            div.innerHTML = `<span class="text-white">${tipo === 'user' ? '👤 ' : '👨‍💼 '}${texto}</span>`;
             chat.appendChild(div);
             chat.scrollTop = chat.scrollHeight;
         }
@@ -798,7 +990,7 @@ ${pagamentoPix === 'Sim' ? '✅ Chave PIX: 147.122.587-99' : '💵 Pagamento dir
                             <span class="text-xl">${icone}</span>
                             <div class="flex-1">
                                 <div class="text-white font-medium text-sm">${endereco.split(',')[0]}</div>
-                                <div class="text-gray-400 text-xs mt-1">${endereco}</div>
+                                <div class="text-gray-300 text-xs mt-1">${endereco}</div>
                             </div>
                         </div>
                     `;
@@ -828,6 +1020,25 @@ ${pagamentoPix === 'Sim' ? '✅ Chave PIX: 147.122.587-99' : '💵 Pagamento dir
             }
             if (!e.target.closest('#destino') && !e.target.closest('#sugestoesDestino')) {
                 document.getElementById('sugestoesDestino').classList.add('hidden');
+            }
+        });
+
+        document.getElementById('cpfIdentificacao').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length <= 11) {
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                e.target.value = value;
+            }
+        });
+
+        document.getElementById('telefoneIdentificacao').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length <= 11) {
+                value = value.replace(/(\d{2})(\d)/, '($1) $2');
+                value = value.replace(/(\d{5})(\d)/, '$1-$2');
+                e.target.value = value;
             }
         });
     </script>
