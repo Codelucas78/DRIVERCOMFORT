@@ -597,161 +597,7 @@
             document.getElementById('totalVisitantes').textContent = visitantes.length;
             
             const hoje = new Date().toLocaleDateString('pt-BR');
-            const visitantesHoje = visitantes.filter(v => v.data.split(',')[0] === hoje).length;
-            document.getElementById('visitantesHoje').textContent = visitantesHoje;
-
-            const lista = document.getElementById('listaVisitantes');
-            lista.innerHTML = '';
-            
-            visitantes.slice().reverse().slice(0, 10).forEach(v => {
-                const div = document.createElement('div');
-                div.className = 'glass p-3 rounded-lg';
-                div.innerHTML = `
-                    <div class="font-semibold text-gray-200">${v.nome}</div>
-                    <div class="text-sm text-gray-400">CPF: ${v.cpf} | Tel: ${v.telefone}</div>
-                    <div class="text-xs text-gray-500">Acesso: ${v.data}</div>
-                `;
-                lista.appendChild(div);
-            });
-
-            if (visitantes.length === 0) {
-                lista.innerHTML = '<div class="text-gray-400 text-center p-4">Nenhum visitante ainda</div>';
-            }
-        }
-
-        function toggleAdmin() {
-            document.getElementById('adminModal').classList.toggle('hidden');
-        }
-
-        function atualizarFoto() {
-            const input = document.getElementById('uploadFoto');
-            const file = input.files[0];
-            
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const foto = document.getElementById('fotoMotorista');
-                    const avatar = document.getElementById('avatarPadrao');
-                    foto.src = e.target.result;
-                    foto.classList.remove('hidden');
-                    avatar.classList.add('hidden');
-                    
-                    // Salvar foto no localStorage
-                    localStorage.setItem('fotoMotorista', e.target.result);
-                    alert('✅ Foto atualizada com sucesso!');
-                };
-                reader.readAsDataURL(file);
-            } else {
-                alert('❌ Selecione uma foto primeiro!');
-            }
-        }
-
-        function obterLocalizacao() {
-            const status = document.getElementById('locationStatus');
-            const origemInput = document.getElementById('origem');
-            status.classList.remove('hidden');
-            status.className = 'mt-3 p-3 glass rounded-lg text-sm text-cyan-300';
-            status.textContent = '🔄 Obtendo sua localização...';
-            
-            if (!navigator.geolocation) {
-                status.className = 'mt-3 p-3 glass rounded-lg text-sm text-red-300';
-                status.textContent = '❌ Geolocalização não suportada pelo navegador';
-                return;
-            }
-
-            navigator.geolocation.getCurrentPosition(
-                async (position) => {
-                    latOrigem = position.coords.latitude;
-                    lngOrigem = position.coords.longitude;
-                    
-                    status.textContent = '🔄 Buscando endereço...';
-                    
-                    try {
-                        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latOrigem}&lon=${lngOrigem}&accept-language=pt-BR`);
-                        const data = await response.json();
-                        
-                        const endereco = data.address;
-                        let enderecoFormatado = '';
-                        
-                        if (endereco.road) {
-                            enderecoFormatado = endereco.road;
-                            if (endereco.house_number) enderecoFormatado += ', ' + endereco.house_number;
-                            if (endereco.suburb || endereco.neighbourhood) enderecoFormatado += ' - ' + (endereco.suburb || endereco.neighbourhood);
-                            if (endereco.city || endereco.town) enderecoFormatado += ', ' + (endereco.city || endereco.town);
-                            if (endereco.state) enderecoFormatado += ' - ' + endereco.state;
-                        } else {
-                            enderecoFormatado = data.display_name;
-                        }
-                        
-                        origemInput.value = enderecoFormatado;
-                        status.className = 'mt-3 p-3 glass rounded-lg text-sm text-green-300';
-                        status.textContent = '✅ Localização obtida: ' + enderecoFormatado;
-                        setTimeout(() => status.classList.add('hidden'), 5000);
-                    } catch (error) {
-                        origemInput.value = `${latOrigem.toFixed(6)}, ${lngOrigem.toFixed(6)}`;
-                        status.className = 'mt-3 p-3 glass rounded-lg text-sm text-yellow-300';
-                        status.textContent = '⚠️ Localização obtida (coordenadas)';
-                        setTimeout(() => status.classList.add('hidden'), 3000);
-                    }
-                },
-                (error) => {
-                    status.className = 'mt-3 p-3 glass rounded-lg text-sm text-red-300';
-                    status.textContent = '❌ Erro ao obter localização. Ative a permissão no navegador.';
-                }
-            );
-        }
-
-        function abrirGoogleMaps() {
-            const destino = document.getElementById('destino').value;
-            const origem = document.getElementById('origem').value;
-            
-            if (!destino) {
-                alert('❌ Digite o endereço de destino primeiro!');
-                return;
-            }
-            
-            let url;
-            
-            // Tentar usar coordenadas GPS primeiro
-            if (latOrigem && lngOrigem) {
-                url = `https://www.google.com/maps/dir/${latOrigem},${lngOrigem}/${encodeURIComponent(destino)}`;
-            } 
-            // Se não tiver GPS mas tiver endereço de origem
-            else if (origem && origem.trim() !== '') {
-                url = `https://www.google.com/maps/dir/${encodeURIComponent(origem)}/${encodeURIComponent(destino)}`;
-            } 
-            // Se não tiver origem, apenas mostrar o destino
-            else {
-                url = `https://www.google.com/maps/search/${encodeURIComponent(destino)}`;
-            }
-            
-            window.open(url, '_blank');
-        }
-
-        function abrirWaze() {
-            const destino = document.getElementById('destino').value;
-            const origem = document.getElementById('origem').value;
-            
-            if (!destino) {
-                alert('❌ Digite o endereço de destino primeiro!');
-                return;
-            }
-            
-            let url;
-            
-            // Formato do Waze
-            if (latOrigem && lngOrigem) {
-                url = `https://waze.com/ul?ll=${latOrigem},${lngOrigem}&navigate=yes&q=${encodeURIComponent(destino)}`;
-            } else if (origem && origem.trim() !== '') {
-                url = `https://waze.com/ul?q=${encodeURIComponent(destino)}&navigate=yes`;
-            } else {
-                url = `https://waze.com/ul?q=${encodeURIComponent(destino)}`;
-            }
-            
-            window.open(url, '_blank');
-        }
-
-        function calcularRota() {
+            const visitantesHoje = visitantes.filter(v => v.data.split(',')[0] === hoje).length;async function calcularRota() {
             const origem = document.getElementById('origem').value;
             const destino = document.getElementById('destino').value;
 
@@ -763,104 +609,90 @@
             origemAtual = origem;
             destinoAtual = destino;
 
-            // Simulação de cálculo de distância
-            const km = Math.round(Math.random() * 30 + 10);
-            
-            // Definir valores baseados na distância da Grande Vitória
-            let valorPorKm, taxaBase;
-            
-            if (km <= 50) {
-                valorPorKm = 3.50;
-                taxaBase = 8.00;
-                document.getElementById('taxaDescricao').textContent = 'Valor por km (Grande Vitória):';
-            } else {
-                valorPorKm = 4.50;
-                taxaBase = 15.00;
-                document.getElementById('taxaDescricao').textContent = 'Valor por km (Fora da Grande Vitória):';
-            }
-
-            const valorKm = km * valorPorKm;
-            const total = valorKm + taxaBase;
-
-            distanciaCalculada = km;
-            valorTotalCalculado = total;
-
-            document.getElementById('distanciaTexto').textContent = km + ' km';
-            document.getElementById('valorKm').textContent = 'R$ ' + valorKm.toFixed(2);
-            document.getElementById('taxaBase').textContent = 'R$ ' + taxaBase.toFixed(2);
-            document.getElementById('valorTotal').textContent = 'R$ ' + total.toFixed(2);
-            document.getElementById('valorPagamento').textContent = 'R$ ' + total.toFixed(2);
+            // Mostrar loading
             document.getElementById('resultadoPreco').classList.remove('hidden');
-            document.getElementById('secaoPagamento').classList.remove('hidden');
-            document.getElementById('btnWhatsApp').classList.remove('hidden');
+            document.getElementById('distanciaTexto').textContent = 'Calculando...';
+            document.getElementById('valorTotal').textContent = 'R$ --';
 
-            const tipoViagem = km <= 50 ? 'Grande Vitória' : 'Fora da Grande Vitória';
-            adicionarMensagemChat('driver', `✅ Rota calculada! Distância: ${km} km (${tipoViagem}). Valor total: R$ ${total.toFixed(2)}. O pagamento pode ser feito diretamente ao motorista ou via PIX (opcional).`);
+            try {
+                // Geocodificar origem e destino
+                const origemCoords = await geocodificar(origem);
+                const destinoCoords = await geocodificar(destino);
+
+                if (!origemCoords || !destinoCoords) {
+                    throw new Error('Não foi possível localizar os endereços');
+                }
+
+                // Calcular distância real usando API do OSRM
+                const response = await fetch(
+                    `https://router.project-osrm.org/route/v1/driving/${origemCoords.lon},${origemCoords.lat};${destinoCoords.lon},${destinoCoords.lat}?overview=false`
+                );
+                const data = await response.json();
+
+                if (data.code !== 'Ok') {
+                    throw new Error('Não foi possível calcular a rota');
+                }
+
+                const distanciaMetros = data.routes[0].distance;
+                const km = Math.round(distanciaMetros / 1000);
+
+                // Verificar se a viagem sai do Espírito Santo
+                const estadoOrigem = await obterEstado(origemCoords.lat, origemCoords.lon);
+                const estadoDestino = await obterEstado(destinoCoords.lat, destinoCoords.lon);
+                
+                const foraDe ES = estadoOrigem !== 'Espírito Santo' || estadoDestino !== 'Espírito Santo';
+                const valorPorKm = foraDe ES ? 4.00 : 3.00;
+
+                const total = km * valorPorKm;
+
+                distanciaCalculada = km;
+                valorTotalCalculado = total;
+
+                document.getElementById('distanciaTexto').textContent = km + ' km';
+                document.getElementById('taxaDescricao').textContent = foraDe ES 
+                    ? 'Valor por km (Fora do ES): R$ 4,00/km' 
+                    : 'Valor por km (ES): R$ 3,00/km';
+                document.getElementById('valorKm').textContent = 'R$ ' + (km * valorPorKm).toFixed(2);
+                document.getElementById('taxaBase').style.display = 'none';
+                document.getElementById('valorTotal').textContent = 'R$ ' + total.toFixed(2);
+                document.getElementById('valorPagamento').textContent = 'R$ ' + total.toFixed(2);
+                document.getElementById('secaoPagamento').classList.remove('hidden');
+                document.getElementById('btnWhatsApp').classList.remove('hidden');
+
+                const tipoViagem = foraDe ES ? 'Fora do Espírito Santo' : 'Espírito Santo';
+                adicionarMensagemChat('driver', `✅ Rota calculada! Distância: ${km} km (${tipoViagem}). Valor: R$ ${total.toFixed(2)} (${valorPorKm.toFixed(2)}/km). Pagamento direto ao motorista ou via PIX.`);
+            } catch (error) {
+                alert('❌ Erro ao calcular rota. Verifique os endereços e tente novamente.');
+                document.getElementById('resultadoPreco').classList.add('hidden');
+            }
         }
 
-        function copiarPix() {
-            const chavePix = '14712258799';
-            navigator.clipboard.writeText(chavePix).then(() => {
-                alert('✅ Chave PIX copiada com sucesso!\n\n📋 ' + chavePix);
-            }).catch(() => {
-                alert('📋 Chave PIX: ' + chavePix + '\n\nCopie manualmente esta chave.');
-            });
+        async function geocodificar(endereco) {
+            try {
+                const response = await fetch(
+                    `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(endereco)}&limit=1&accept-language=pt-BR`
+                );
+                const data = await response.json();
+                if (data && data.length > 0) {
+                    return {
+                        lat: parseFloat(data[0].lat),
+                        lon: parseFloat(data[0].lon)
+                    };
+                }
+                return null;
+            } catch (error) {
+                return null;
+            }
         }
 
-        function confirmarPagamento() {
-            alert('✅ Pagamento confirmado! Você pode enviar a solicitação pelo WhatsApp agora.');
-            document.getElementById('secaoPagamento').style.opacity = '0.6';
-            adicionarMensagemChat('driver', '✅ Pagamento PIX confirmado! Obrigado pela preferência.');
+        async function obterEstado(lat, lon) {
+            try {
+                const response = await fetch(
+                    `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&accept-language=pt-BR`
+                );
+                const data = await response.json();
+                return data.address?.state || '';
+            } catch (error) {
+                return '';
+            }
         }
-
-        function enviarMensagem() {
-            const input = document.getElementById('mensagemInput');
-            const mensagem = input.value.trim();
-            
-            if (!mensagem) return;
-
-            adicionarMensagemChat('user', mensagem);
-            input.value = '';
-
-            setTimeout(() => {
-                adicionarMensagemChat('driver', '✅ Mensagem recebida! Para solicitar uma corrida, use o formulário acima e calcule o valor.');
-            }, 500);
-        }
-
-        function enviarWhatsApp() {
-            const pagamentoPix = document.getElementById('secaoPagamento').style.opacity === '0.6' ? 'Sim' : 'Não confirmado';
-            
-            const mensagem = `🚗 *Nova Solicitação de Corrida Premium*
-
-👤 *Motorista:* Lucas Santos
-📍 *Origem:* ${origemAtual}
-🎯 *Destino:* ${destinoAtual}
-📏 *Distância:* ${distanciaCalculada} km
-💰 *Valor:* R$ ${valorTotalCalculado.toFixed(2)}
-
-💳 *Pagamento PIX antecipado:* ${pagamentoPix}
-${pagamentoPix === 'Sim' ? '✅ Chave PIX: 147.122.587-99' : '💵 Pagamento direto ao motorista'}
-
----
-🌟 Serviço Premium de Transporte
-⭐⭐⭐⭐⭐ Avaliação 5 Estrelas | 1.247 corridas realizadas`;
-
-            const url = `https://wa.me/5527988668504?text=${encodeURIComponent(mensagem)}`;
-            window.open(url, '_blank');
-            
-            adicionarMensagemChat('driver', '✅ Redirecionando para WhatsApp... Aguarde o contato do motorista Lucas Santos!');
-        }
-
-        function adicionarMensagemChat(tipo, texto) {
-            const chat = document.getElementById('chatMessages');
-            const div = document.createElement('div');
-            div.className = tipo === 'user' 
-                ? 'p-4 rounded-2xl max-w-md bg-gradient-to-r from-purple-600 to-pink-600 text-white ml-auto text-right border border-purple-400/30 shadow-lg' 
-                : 'p-4 rounded-2xl max-w-md glass';
-            div.textContent = (tipo === 'user' ? '👤 ' : '👨‍💼 ') + texto;
-            chat.appendChild(div);
-            chat.scrollTop = chat.scrollHeight;
-        }
-    </script>
-</body>
-</html>
