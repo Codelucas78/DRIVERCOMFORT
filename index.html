@@ -146,7 +146,7 @@
 
     <!-- Modal de Turismo -->
     <div id="turismoModal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div class="glass p-8 rounded-3xl max-w-6xl w-full max-h-[90vh] overflow-y-auto border-2 border-cyan-500/50">
+        <div class="glass p-8 rounded-3xl max-w-5xl w-full max-h-[90vh] overflow-y-auto border-2 border-cyan-500/50">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-4xl font-bold text-white">🏖️ Pacotes de Turismo Premium</h2>
                 <button onclick="toggleTurismo()" class="text-white text-3xl hover:text-red-400 transition-colors">
@@ -154,13 +154,75 @@
                 </button>
             </div>
 
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="pacotesTurismo">
-                <!-- Os pacotes serão carregados dinamicamente -->
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Pacote 1 -->
+                <div class="glass p-6 rounded-2xl border-2 border-cyan-500/40 hover:border-cyan-500/70 transition-all hover:scale-105 duration-300">
+                    <div class="text-5xl mb-4">🏖️</div>
+                    <h3 class="text-2xl font-bold text-cyan-300 mb-3">Praias da Grande Vitória</h3>
+                    <p class="text-gray-200 mb-4 text-lg">Conheça as melhores praias: Camburi, Curva da Jurema, Praia da Costa, Praia de Itaparica e muito mais!</p>
+                    <div class="space-y-2 mb-4">
+                        <p class="text-white text-lg">⏱️ <strong>Duração:</strong> 4-6 horas</p>
+                        <p class="text-white text-lg">👥 <strong>Capacidade:</strong> Até 4 pessoas</p>
+                        <p class="text-white text-lg">📍 <strong>Locais:</strong> Jardim Camburi, Praia da Costa, Curva da Jurema</p>
+                        <p class="text-green-300 font-bold text-2xl mt-3">💰 R$ 250,00</p>
+                    </div>
+                    <button onclick="solicitarTurismo('Praias da Grande Vitória', 250)" class="w-full px-4 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white rounded-xl font-semibold transition-all text-lg">
+                        📱 Solicitar via WhatsApp
+                    </button>
+                </div>
+
+                <!-- Pacote 2 -->
+                <div class="glass p-6 rounded-2xl border-2 border-green-500/40 hover:border-green-500/70 transition-all hover:scale-105 duration-300">
+                    <div class="text-5xl mb-4">🏔️</div>
+                    <h3 class="text-2xl font-bold text-green-300 mb-3">Serra Capixaba</h3>
+                    <p class="text-gray-200 mb-4 text-lg">Explore Domingos Martins, Venda Nova do Imigrante, Pedra Azul e toda a beleza das montanhas capixabas!</p>
+                    <div class="space-y-2 mb-4">
+                        <p class="text-white text-lg">⏱️ <strong>Duração:</strong> 8-10 horas</p>
+                        <p class="text-white text-lg">👥 <strong>Capacidade:</strong> Até 4 pessoas</p>
+                        <p class="text-white text-lg">📍 <strong>Locais:</strong> Domingos Martins, Venda Nova, Pedra Azul</p>
+                        <p class="text-green-300 font-bold text-2xl mt-3">💰 R$ 450,00</p>
+                    </div>
+                    <button onclick="solicitarTurismo('Serra Capixaba', 450)" class="w-full px-4 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl font-semibold transition-all text-lg">
+                        📱 Solicitar via WhatsApp
+                    </button>
+                </div>
+
+                <!-- Pacote 3 -->
+                <div class="glass p-6 rounded-2xl border-2 border-orange-500/40 hover:border-orange-500/70 transition-all hover:scale-105 duration-300">
+                    <div class="text-5xl mb-4">🐢</div>
+                    <h3 class="text-2xl font-bold text-orange-300 mb-3">Guarapari e Anchieta</h3>
+                    <p class="text-gray-200 mb-4 text-lg">Praias paradisíacas, areia monazítica terapêutica, Santuário de Anchieta e pontos turísticos incríveis!</p>
+                    <div class="space-y-2 mb-4">
+                        <p class="text-white text-lg">⏱️ <strong>Duração:</strong> 6-8 horas</p>
+                        <p class="text-white text-lg">👥 <strong>Capacidade:</strong> Até 4 pessoas</p>
+                        <p class="text-white text-lg">📍 <strong>Locais:</strong> Guarapari, Anchieta, Iriri, Ubu</p>
+                        <p class="text-green-300 font-bold text-2xl mt-3">💰 R$ 350,00</p>
+                    </div>
+                    <button onclick="solicitarTurismo('Guarapari e Anchieta', 350)" class="w-full px-4 py-3 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white rounded-xl font-semibold transition-all text-lg">
+                        📱 Solicitar via WhatsApp
+                    </button>
+                </div>
+
+                <!-- Pacote 4 -->
+                <div class="glass p-6 rounded-2xl border-2 border-purple-500/40 hover:border-purple-500/70 transition-all hover:scale-105 duration-300">
+                    <div class="text-5xl mb-4">🎨</div>
+                    <h3 class="text-2xl font-bold text-purple-300 mb-3">City Tour Vitória</h3>
+                    <p class="text-gray-200 mb-4 text-lg">Centro histórico, Convento da Penha, Palácio Anchieta, Teatro Carlos Gomes e muito mais!</p>
+                    <div class="space-y-2 mb-4">
+                        <p class="text-white text-lg">⏱️ <strong>Duração:</strong> 3-4 horas</p>
+                        <p class="text-white text-lg">👥 <strong>Capacidade:</strong> Até 4 pessoas</p>
+                        <p class="text-white text-lg">📍 <strong>Locais:</strong> Centro, Convento da Penha, Vila Velha</p>
+                        <p class="text-green-300 font-bold text-2xl mt-3">💰 R$ 200,00</p>
+                    </div>
+                    <button onclick="solicitarTurismo('City Tour Vitória', 200)" class="w-full px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl font-semibold transition-all text-lg">
+                        📱 Solicitar via WhatsApp
+                    </button>
+                </div>
             </div>
 
             <div class="mt-6 p-5 bg-blue-900/40 border-2 border-blue-500/40 rounded-xl">
                 <p class="text-blue-100 text-center text-lg">
-                    ℹ️ <strong>Todos os pacotes incluem:</strong> Motorista profissional experiente, veículo confortável e com ar-condicionado. Alimentação e ingressos não inclusos. Valores a combinar conforme roteiro e necessidades.
+                    ℹ️ <strong>Todos os pacotes incluem:</strong> Motorista profissional experiente, veículo confortável e com ar-condicionado. Alimentação e ingressos não inclusos.
                 </p>
             </div>
         </div>
@@ -305,7 +367,7 @@
 
                     <div class="bg-blue-900/50 border-2 border-blue-400/40 rounded-xl p-5 mt-4">
                         <p class="text-blue-100 text-base">
-                            ℹ️ <strong>Informação:</strong> Valores dentro do Espírito Santo: R$ 3,00/km. Viagens para outros estados ou saída de Viana: R$ 4,00/km. Pagamento direto ao motorista ou PIX.
+                            ℹ️ <strong>Informação:</strong> Valores dentro do Espírito Santo: R$ 3,00/km. Viagens para outros estados: R$ 4,00/km. Pagamento direto ao motorista ou PIX.
                         </p>
                     </div>
                 </div>
@@ -384,32 +446,25 @@
 
                 <!-- Estatísticas -->
                 <div class="glass p-8 rounded-2xl border-2 border-purple-500/30 shadow-xl">
-                    <h3 class="text-3xl font-bold text-white mb-5">📊 Estatísticas</h3>
+                    <h3 class="text-3xl font-bold text-white mb-5">📊 Estatísticas de Hoje</h3>
                     <div class="grid grid-cols-2 gap-5 mb-6">
                         <div class="glass p-6 rounded-xl text-center border-2 border-purple-400/30">
                             <div class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-pink-300">
                                 <span id="visitantesHoje">0</span>
                             </div>
-                            <div class="text-base text-gray-100 mt-2 font-bold">👥 Hoje</div>
-                        </div>
-                        <div class="glass p-6 rounded-xl text-center border-2 border-blue-400/30">
-                            <div class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-cyan-300">
-                                <span id="visitantesMes">0</span>
-                            </div>
-                            <div class="text-base text-gray-100 mt-2 font-bold">📅 Este Mês</div>
+                            <div class="text-base text-gray-100 mt-2 font-bold">👥 Visitantes Hoje</div>
                         </div>
                         <div class="glass p-6 rounded-xl text-center border-2 border-green-400/30">
                             <div class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-300 to-emerald-300">
-                                <span id="totalVisitantes">0</span>
+                                1.247
                             </div>
-                            <div class="text-base text-gray-100 mt-2 font-bold">🌟 Total</div>
+                            <div class="text-base text-gray-100 mt-2 font-bold">🚗 Total de Corridas</div>
                         </div>
-                        <div class="glass p-6 rounded-xl text-center border-2 border-yellow-400/30">
-                            <div class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-orange-300">
-                                <span id="recordeDia">0</span>
-                            </div>
-                            <div class="text-base text-gray-100 mt-2 font-bold">🏆 Recorde/Dia</div>
-                        </div>
+                    </div>
+
+                    <h4 class="text-xl font-bold text-white mb-4">🕒 Últimos Visitantes</h4>
+                    <div id="listaVisitantes" class="space-y-3 max-h-64 overflow-y-auto">
+                        <div class="text-gray-300 text-center p-4">Nenhum visitante ainda</div>
                     </div>
                 </div>
             </div>
@@ -419,7 +474,7 @@
 
     <!-- Modal Admin -->
     <div id="adminModal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div class="glass p-8 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border-2 border-yellow-500/50">
+        <div class="glass p-8 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border-2 border-yellow-500/50">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-4xl font-bold text-white">⚙️ Painel Administrativo</h2>
                 <button onclick="toggleAdmin()" class="text-white text-3xl hover:text-red-400 transition-colors">
@@ -444,83 +499,33 @@
                     </button>
                 </div>
 
-                <div class="glass p-6 rounded-2xl border-2 border-cyan-500/40">
-                    <h3 class="text-2xl font-bold text-white mb-4">🏖️ Gerenciar Pacotes de Turismo</h3>
-                    
-                    <div class="space-y-4 mb-6">
-                        <div class="grid md:grid-cols-2 gap-4">
-                            <input 
-                                type="text" 
-                                id="nomePacote" 
-                                placeholder="Nome do Pacote"
-                                class="w-full px-4 py-3 bg-slate-800/90 border-2 border-cyan-400/40 text-white placeholder-gray-400 rounded-xl focus:border-cyan-500 focus:outline-none"
-                            >
-                            <input 
-                                type="text" 
-                                id="iconePacote" 
-                                placeholder="Ícone (emoji)"
-                                class="w-full px-4 py-3 bg-slate-800/90 border-2 border-cyan-400/40 text-white placeholder-gray-400 rounded-xl focus:border-cyan-500 focus:outline-none"
-                            >
-                        </div>
-                        <textarea 
-                            id="descricaoPacote" 
-                            placeholder="Descrição do pacote"
-                            rows="3"
-                            class="w-full px-4 py-3 bg-slate-800/90 border-2 border-cyan-400/40 text-white placeholder-gray-400 rounded-xl focus:border-cyan-500 focus:outline-none"
-                        ></textarea>
-                        <div class="grid md:grid-cols-3 gap-4">
-                            <input 
-                                type="text" 
-                                id="duracaoPacote" 
-                                placeholder="Duração (ex: 4-6 horas)"
-                                class="w-full px-4 py-3 bg-slate-800/90 border-2 border-cyan-400/40 text-white placeholder-gray-400 rounded-xl focus:border-cyan-500 focus:outline-none"
-                            >
-                            <input 
-                                type="text" 
-                                id="capacidadePacote" 
-                                placeholder="Capacidade"
-                                class="w-full px-4 py-3 bg-slate-800/90 border-2 border-cyan-400/40 text-white placeholder-gray-400 rounded-xl focus:border-cyan-500 focus:outline-none"
-                            >
-                            <input 
-                                type="text" 
-                                id="valorPacote" 
-                                placeholder="Valor (opcional)"
-                                class="w-full px-4 py-3 bg-slate-800/90 border-2 border-cyan-400/40 text-white placeholder-gray-400 rounded-xl focus:border-cyan-500 focus:outline-none"
-                            >
-                        </div>
-                        <input 
-                            type="text" 
-                            id="locaisPacote" 
-                            placeholder="Locais inclusos"
-                            class="w-full px-4 py-3 bg-slate-800/90 border-2 border-cyan-400/40 text-white placeholder-gray-400 rounded-xl focus:border-cyan-500 focus:outline-none"
-                        >
-                        <input 
-                            type="text" 
-                            id="corPacote" 
-                            placeholder="Cor (cyan, green, orange, purple, pink, blue)"
-                            class="w-full px-4 py-3 bg-slate-800/90 border-2 border-cyan-400/40 text-white placeholder-gray-400 rounded-xl focus:border-cyan-500 focus:outline-none"
-                        >
-                    </div>
-                    
-                    <button 
-                        onclick="adicionarPacote()" 
-                        class="w-full px-6 py-4 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white rounded-xl font-bold transition-all border border-cyan-400/50 text-lg mb-4"
-                    >
-                        ➕ Adicionar Pacote
-                    </button>
-
-                    <div class="mt-6">
-                        <h4 class="text-xl font-bold text-white mb-3">📋 Pacotes Cadastrados</h4>
-                        <div id="listaPacotesAdmin" class="space-y-3 max-h-80 overflow-y-auto">
-                            <!-- Pacotes serão listados aqui -->
-                        </div>
-                    </div>
-                </div>
-
                 <div class="glass p-6 rounded-2xl border-2 border-green-500/40">
-                    <h3 class="text-2xl font-bold text-white mb-4">📊 Visitantes Registrados</h3>
-                    <div id="listaVisitantesAdmin" class="space-y-3 max-h-96 overflow-y-auto">
-                        <div class="text-gray-300 text-center p-4">Nenhum visitante registrado</div>
+                    <h3 class="text-2xl font-bold text-white mb-4">📝 Registrar Novo Visitante</h3>
+                    <div class="space-y-3">
+                        <input 
+                            type="text" 
+                            id="nomeVisitante" 
+                            placeholder="Nome completo"
+                            class="w-full px-4 py-3 bg-slate-800/90 border-2 border-purple-400/40 text-white placeholder-gray-400 rounded-xl focus:border-purple-500 focus:outline-none"
+                        >
+                        <input 
+                            type="text" 
+                            id="cpfVisitante" 
+                            placeholder="CPF"
+                            class="w-full px-4 py-3 bg-slate-800/90 border-2 border-purple-400/40 text-white placeholder-gray-400 rounded-xl focus:border-purple-500 focus:outline-none"
+                        >
+                        <input 
+                            type="text" 
+                            id="telefoneVisitante" 
+                            placeholder="Telefone"
+                            class="w-full px-4 py-3 bg-slate-800/90 border-2 border-purple-400/40 text-white placeholder-gray-400 rounded-xl focus:border-purple-500 focus:outline-none"
+                        >
+                        <button 
+                            onclick="registrarVisitante()" 
+                            class="w-full px-6 py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl font-bold transition-all border border-green-400/50 text-lg"
+                        >
+                            ✅ Registrar Visitante
+                        </button>
                     </div>
                 </div>
             </div>
@@ -536,184 +541,6 @@
         let valorTotalCalculado = 0;
         let timeoutSugestaoOrigem = null;
         let timeoutSugestaoDestino = null;
-
-        // Pacotes de turismo padrão
-        const pacotesPadrao = [
-            {
-                icone: '🏖️',
-                nome: 'Praias da Grande Vitória',
-                descricao: 'Conheça as melhores praias: Camburi, Curva da Jurema, Praia da Costa, Praia de Itaparica e muito mais!',
-                duracao: '4-6 horas',
-                capacidade: 'Até 4 pessoas',
-                locais: 'Jardim Camburi, Praia da Costa, Curva da Jurema',
-                valor: 'A combinar',
-                cor: 'cyan'
-            },
-            {
-                icone: '🏔️',
-                nome: 'Serra Capixaba',
-                descricao: 'Explore Domingos Martins, Venda Nova do Imigrante, Pedra Azul e toda a beleza das montanhas capixabas!',
-                duracao: '8-10 horas',
-                capacidade: 'Até 4 pessoas',
-                locais: 'Domingos Martins, Venda Nova, Pedra Azul',
-                valor: 'A combinar',
-                cor: 'green'
-            },
-            {
-                icone: '🐢',
-                nome: 'Guarapari e Anchieta',
-                descricao: 'Praias paradisíacas, areia monazítica terapêutica, Santuário de Anchieta e pontos turísticos incríveis!',
-                duracao: '6-8 horas',
-                capacidade: 'Até 4 pessoas',
-                locais: 'Guarapari, Anchieta, Iriri, Ubu',
-                valor: 'A combinar',
-                cor: 'orange'
-            },
-            {
-                icone: '🎨',
-                nome: 'City Tour Vitória',
-                descricao: 'Centro histórico, Convento da Penha, Palácio Anchieta, Teatro Carlos Gomes e muito mais!',
-                duracao: '3-4 horas',
-                capacidade: 'Até 4 pessoas',
-                locais: 'Centro, Convento da Penha, Vila Velha',
-                valor: 'A combinar',
-                cor: 'purple'
-            },
-            {
-                icone: '🏊',
-                nome: 'Trilha Piscinas Naturais',
-                descricao: 'Aventura pelas belíssimas piscinas naturais, paisagens deslumbrantes e águas cristalinas!',
-                duracao: '5-7 horas',
-                capacidade: 'Até 4 pessoas',
-                locais: 'Piscinas Naturais, Trilhas Ecológicas',
-                valor: 'A combinar',
-                cor: 'blue'
-            },
-            {
-                icone: '🦎',
-                nome: 'Rota do Lagarto',
-                descricao: 'Conheça a famosa Rota do Lagarto com suas paisagens únicas e biodiversidade incrível!',
-                duracao: '4-6 horas',
-                capacidade: 'Até 4 pessoas',
-                locais: 'Rota do Lagarto, Mirantes Naturais',
-                valor: 'A combinar',
-                cor: 'green'
-            },
-            {
-                icone: '🙏',
-                nome: 'Rota do Buda',
-                descricao: 'Visite o famoso monastério budista, jardins zen e locais de meditação e paz espiritual!',
-                duracao: '3-5 horas',
-                capacidade: 'Até 4 pessoas',
-                locais: 'Monastério Zen Morro da Vargem',
-                valor: 'A combinar',
-                cor: 'pink'
-            },
-            {
-                icone: '🌴',
-                nome: 'Coqueiral de Aracruz',
-                descricao: 'Explore o belo coqueiral, praias paradisíacas e a rica cultura local de Aracruz!',
-                duracao: '6-8 horas',
-                capacidade: 'Até 4 pessoas',
-                locais: 'Coqueiral, Praias de Aracruz, Centro Histórico',
-                valor: 'A combinar',
-                cor: 'cyan'
-            }
-        ];
-
-        function inicializarPacotes() {
-            if (!localStorage.getItem('pacotesTurismo')) {
-                localStorage.setItem('pacotesTurismo', JSON.stringify(pacotesPadrao));
-            }
-            carregarPacotesTurismo();
-        }
-
-        function carregarPacotesTurismo() {
-            const pacotes = JSON.parse(localStorage.getItem('pacotesTurismo') || '[]');
-            const container = document.getElementById('pacotesTurismo');
-            const containerAdmin = document.getElementById('listaPacotesAdmin');
-            
-            container.innerHTML = '';
-            containerAdmin.innerHTML = '';
-
-            pacotes.forEach((pacote, index) => {
-                // Card para modal de turismo
-                const cardTurismo = document.createElement('div');
-                cardTurismo.className = `glass p-6 rounded-2xl border-2 border-${pacote.cor}-500/40 hover:border-${pacote.cor}-500/70 transition-all hover:scale-105 duration-300`;
-                cardTurismo.innerHTML = `
-                    <div class="text-5xl mb-4">${pacote.icone}</div>
-                    <h3 class="text-2xl font-bold text-${pacote.cor}-300 mb-3">${pacote.nome}</h3>
-                    <p class="text-gray-200 mb-4 text-lg">${pacote.descricao}</p>
-                    <div class="space-y-2 mb-4">
-                        <p class="text-white text-lg">⏱️ <strong>Duração:</strong> ${pacote.duracao}</p>
-                        <p class="text-white text-lg">👥 <strong>Capacidade:</strong> ${pacote.capacidade}</p>
-                        <p class="text-white text-lg">📍 <strong>Locais:</strong> ${pacote.locais}</p>
-                        <p class="text-green-300 font-bold text-2xl mt-3">💰 ${pacote.valor}</p>
-                    </div>
-                    <button onclick="solicitarTurismo('${pacote.nome}', '${pacote.valor}')" class="w-full px-4 py-3 bg-gradient-to-r from-${pacote.cor}-600 to-blue-600 hover:from-${pacote.cor}-700 hover:to-blue-700 text-white rounded-xl font-semibold transition-all text-lg">
-                        📱 Solicitar via WhatsApp
-                    </button>
-                `;
-                container.appendChild(cardTurismo);
-
-                // Card para admin
-                const cardAdmin = document.createElement('div');
-                cardAdmin.className = 'glass p-4 rounded-xl border-2 border-cyan-400/30 flex justify-between items-center';
-                cardAdmin.innerHTML = `
-                    <div class="flex-1">
-                        <div class="text-2xl mb-2">${pacote.icone} <span class="text-white font-bold">${pacote.nome}</span></div>
-                        <div class="text-sm text-gray-300">Valor: ${pacote.valor}</div>
-                    </div>
-                    <button onclick="removerPacote(${index})" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-bold transition-all">
-                        🗑️
-                    </button>
-                `;
-                containerAdmin.appendChild(cardAdmin);
-            });
-        }
-
-        function adicionarPacote() {
-            const nome = document.getElementById('nomePacote').value.trim();
-            const icone = document.getElementById('iconePacote').value.trim();
-            const descricao = document.getElementById('descricaoPacote').value.trim();
-            const duracao = document.getElementById('duracaoPacote').value.trim();
-            const capacidade = document.getElementById('capacidadePacote').value.trim();
-            const valor = document.getElementById('valorPacote').value.trim() || 'A combinar';
-            const locais = document.getElementById('locaisPacote').value.trim();
-            const cor = document.getElementById('corPacote').value.trim() || 'purple';
-
-            if (!nome || !icone || !descricao || !duracao || !capacidade || !locais) {
-                alert('⚠️ Preencha todos os campos obrigatórios!');
-                return;
-            }
-
-            const pacotes = JSON.parse(localStorage.getItem('pacotesTurismo') || '[]');
-            pacotes.push({ nome, icone, descricao, duracao, capacidade, valor, locais, cor });
-            localStorage.setItem('pacotesTurismo', JSON.stringify(pacotes));
-
-            document.getElementById('nomePacote').value = '';
-            document.getElementById('iconePacote').value = '';
-            document.getElementById('descricaoPacote').value = '';
-            document.getElementById('duracaoPacote').value = '';
-            document.getElementById('capacidadePacote').value = '';
-            document.getElementById('valorPacote').value = '';
-            document.getElementById('locaisPacote').value = '';
-            document.getElementById('corPacote').value = '';
-
-            alert('✅ Pacote adicionado com sucesso!');
-            carregarPacotesTurismo();
-        }
-
-        function removerPacote(index) {
-            if (!confirm('Deseja realmente remover este pacote?')) return;
-            
-            const pacotes = JSON.parse(localStorage.getItem('pacotesTurismo') || '[]');
-            pacotes.splice(index, 1);
-            localStorage.setItem('pacotesTurismo', JSON.stringify(pacotes));
-            
-            alert('✅ Pacote removido com sucesso!');
-            carregarPacotesTurismo();
-        }
 
         function entrarNoSite() {
             const nome = document.getElementById('nomeIdentificacao').value.trim();
@@ -736,24 +563,14 @@
             }
 
             const visitantes = JSON.parse(localStorage.getItem('visitantes') || '[]');
-            
-            // Verifica se já existe registro deste CPF
-            const visitanteExistente = visitantes.find(v => v.cpf === cpf);
-            
-            if (!visitanteExistente) {
-                const novoVisitante = {
-                    nome,
-                    cpf,
-                    telefone,
-                    primeiroAcesso: new Date().toLocaleString('pt-BR'),
-                    acessos: [new Date().toLocaleString('pt-BR')]
-                };
-                visitantes.push(novoVisitante);
-            } else {
-                // Adiciona novo acesso ao visitante existente
-                visitanteExistente.acessos.push(new Date().toLocaleString('pt-BR'));
-            }
+            const novoVisitante = {
+                nome,
+                cpf,
+                telefone,
+                data: new Date().toLocaleString('pt-BR')
+            };
 
+            visitantes.push(novoVisitante);
             localStorage.setItem('visitantes', JSON.stringify(visitantes));
 
             document.getElementById('identificacaoModal').classList.add('hidden');
@@ -770,7 +587,7 @@
             const mensagem = `🏖️ *Solicitação de Pacote Turístico*
 
 📦 *Pacote:* ${pacote}
-💰 *Valor:* ${valor}
+💰 *Valor:* R$ ${valor},00
 👤 *Motorista:* Lucas Santos
 
 ---
@@ -791,71 +608,60 @@
 
             const visitantes = JSON.parse(localStorage.getItem('visitantes') || '[]');
             const hoje = new Date().toLocaleDateString('pt-BR');
-            const mesAtual = new Date().getMonth();
-            const anoAtual = new Date().getFullYear();
-
-            // Visitantes de hoje
-            const visitantesHoje = visitantes.filter(v => 
-                v.acessos.some(a => a.startsWith(hoje))
-            ).length;
-
-            // Visitantes do mês
-            const visitantesMes = visitantes.filter(v => 
-                v.acessos.some(a => {
-                    const dataAcesso = new Date(a.split(', ')[0].split('/').reverse().join('-'));
-                    return dataAcesso.getMonth() === mesAtual && dataAcesso.getFullYear() === anoAtual;
-                })
-            ).length;
-
-            // Total de visitantes
-            const totalVisitantes = visitantes.length;
-
-            // Recorde de visitantes em um dia
-            const visitantesPorDia = {};
-            visitantes.forEach(v => {
-                v.acessos.forEach(a => {
-                    const dia = a.split(',')[0];
-                    visitantesPorDia[dia] = (visitantesPorDia[dia] || 0) + 1;
-                });
-            });
-            const recordeDia = Math.max(...Object.values(visitantesPorDia), 0);
+            const visitantesHoje = visitantes.filter(v => v.data.startsWith(hoje)).length;
 
             document.getElementById('visitantesHoje').textContent = visitantesHoje;
-            document.getElementById('visitantesMes').textContent = visitantesMes;
-            document.getElementById('totalVisitantes').textContent = totalVisitantes;
-            document.getElementById('recordeDia').textContent = recordeDia;
 
-            // Atualizar lista de visitantes no admin
-            const listaAdmin = document.getElementById('listaVisitantesAdmin');
-            listaAdmin.innerHTML = '';
+            const lista = document.getElementById('listaVisitantes');
+            lista.innerHTML = '';
             
-            visitantes.slice().reverse().forEach(v => {
+            visitantes.slice().reverse().slice(0, 10).forEach(v => {
                 const div = document.createElement('div');
-                div.className = 'glass p-4 rounded-lg border-2 border-green-400/30';
+                div.className = 'glass p-4 rounded-lg border-2 border-purple-400/30';
                 div.innerHTML = `
                     <div class="font-bold text-white text-lg">${v.nome}</div>
                     <div class="text-sm text-gray-200 mt-1">CPF: ${v.cpf} | Tel: ${v.telefone}</div>
-                    <div class="text-xs text-gray-300 mt-1">Primeiro acesso: ${v.primeiroAcesso}</div>
-                    <div class="text-xs text-gray-300">Total de acessos: ${v.acessos.length}</div>
-                    <div class="text-xs text-gray-400 mt-1">Último acesso: ${v.acessos[v.acessos.length - 1]}</div>
+                    <div class="text-xs text-gray-300 mt-1">Acesso: ${v.data}</div>
                 `;
-                listaAdmin.appendChild(div);
+                lista.appendChild(div);
             });
 
             if (visitantes.length === 0) {
-                listaAdmin.innerHTML = '<div class="text-gray-300 text-center p-4">Nenhum visitante registrado</div>';
+                lista.innerHTML = '<div class="text-gray-300 text-center p-4">Nenhum visitante ainda</div>';
             }
         }
 
-        function toggleAdmin() {
-            const senha = prompt('Digite a senha de administrador:');
-            if (senha !== '785623') {
-                alert('❌ Senha incorreta!');
+        function registrarVisitante() {
+            const nome = document.getElementById('nomeVisitante').value.trim();
+            const cpf = document.getElementById('cpfVisitante').value.trim();
+            const telefone = document.getElementById('telefoneVisitante').value.trim();
+
+            if (!nome || !cpf || !telefone) {
+                alert('⚠️ Preencha todos os campos!');
                 return;
             }
-            document.getElementById('adminModal').classList.toggle('hidden');
-            carregarPacotesTurismo();
+
+            const visitantes = JSON.parse(localStorage.getItem('visitantes') || '[]');
+            const novoVisitante = {
+                nome,
+                cpf,
+                telefone,
+                data: new Date().toLocaleString('pt-BR')
+            };
+
+            visitantes.push(novoVisitante);
+            localStorage.setItem('visitantes', JSON.stringify(visitantes));
+
+            document.getElementById('nomeVisitante').value = '';
+            document.getElementById('cpfVisitante').value = '';
+            document.getElementById('telefoneVisitante').value = '';
+
+            alert('✅ Visitante registrado com sucesso!');
             carregarDados();
+        }
+
+        function toggleAdmin() {
+            document.getElementById('adminModal').classList.toggle('hidden');
         }
 
         function atualizarFoto() {
@@ -1019,11 +825,8 @@
                 const estadoOrigem = await obterEstado(origemCoords.lat, origemCoords.lon);
                 const estadoDestino = await obterEstado(destinoCoords.lat, destinoCoords.lon);
                 
-                // Verifica se a origem é região de Viana
-                const origemViana = await verificarViana(origemCoords.lat, origemCoords.lon);
-                
                 const foraDoES = estadoOrigem !== 'Espírito Santo' || estadoDestino !== 'Espírito Santo';
-                const valorPorKm = (foraDoES || origemViana) ? 4.00 : 3.00;
+                const valorPorKm = foraDoES ? 4.00 : 3.00;
 
                 const total = km * valorPorKm;
 
@@ -1032,16 +835,8 @@
 
                 document.getElementById('distanciaTexto').classList.remove('loading-pulse');
                 document.getElementById('distanciaTexto').textContent = km + ' km';
-                
-                let tipoViagem = 'Espírito Santo';
-                if (origemViana) {
-                    tipoViagem = 'Saída região de Viana';
-                } else if (foraDoES) {
-                    tipoViagem = 'Fora do Espírito Santo';
-                }
-                
-                document.getElementById('taxaDescricao').textContent = (foraDoES || origemViana)
-                    ? '💰 Valor por km: R$ 4,00/km' 
+                document.getElementById('taxaDescricao').textContent = foraDoES 
+                    ? '💰 Valor por km (Fora do ES): R$ 4,00/km' 
                     : '💰 Valor por km (ES): R$ 3,00/km';
                 document.getElementById('valorKm').textContent = 'R$ ' + (km * valorPorKm).toFixed(2);
                 document.getElementById('valorTotal').textContent = 'R$ ' + total.toFixed(2);
@@ -1049,6 +844,7 @@
                 document.getElementById('secaoPagamento').classList.remove('hidden');
                 document.getElementById('btnWhatsApp').classList.remove('hidden');
 
+                const tipoViagem = foraDoES ? 'Fora do Espírito Santo' : 'Espírito Santo';
                 adicionarMensagemChat('driver', `✅ Rota calculada! Distância: ${km} km (${tipoViagem}). Valor: R$ ${total.toFixed(2)} (R$ ${valorPorKm.toFixed(2)}/km). Pagamento direto ao motorista ou via PIX.`);
             } catch (error) {
                 document.getElementById('distanciaTexto').classList.remove('loading-pulse');
@@ -1084,19 +880,6 @@
                 return data.address?.state || '';
             } catch (error) {
                 return '';
-            }
-        }
-
-        async function verificarViana(lat, lon) {
-            try {
-                const response = await fetch(
-                    `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&accept-language=pt-BR`
-                );
-                const data = await response.json();
-                const cidade = data.address?.city || data.address?.town || data.address?.municipality || '';
-                return cidade.toLowerCase().includes('viana');
-            } catch (error) {
-                return false;
             }
         }
 
@@ -1268,11 +1051,6 @@ ${pagamentoPix === 'Sim' ? '✅ Chave PIX: 147.122.587-99' : '💵 Pagamento dir
                 value = value.replace(/(\d{5})(\d)/, '$1-$2');
                 e.target.value = value;
             }
-        });
-
-        // Inicializar pacotes de turismo ao carregar a página
-        window.addEventListener('DOMContentLoaded', () => {
-            inicializarPacotes();
         });
     </script>
 </body>
